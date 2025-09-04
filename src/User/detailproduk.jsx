@@ -18,7 +18,7 @@ const products = [
   },
   {
     id: 2,
-    name: "Reusable Straw Set",
+    name: "Reusable Straw Set111",
     price: "Rp 35.000",
     img: "/product-2.jpg",
     description: "Sedotan stainless steel set lengkap dengan sikat pembersih.",
