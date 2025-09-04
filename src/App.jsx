@@ -8,6 +8,8 @@ import CartPage from "./User/cart";
 import DashboardAdmin from "./Admin/dashboardadmin";
 import ProductDetail from "./User/detailproduk";
 import Checkout from "./User/checkout";
+import CategoryManagement from "./Admin/categorymanagement";
+import OrderManagement from "./Admin/ordermanagement";
 
 const App = () => {
   useEffect(() => {
@@ -23,6 +25,8 @@ const App = () => {
         <Route path="/dashboard-admin" element={<DashboardAdmin />} />
         <Route path="/product/:id" element={<ProductDetail />} />
         <Route path="/checkout/:id" element={<Checkout />} />
+        <Route path="/category-admin" element={<CategoryManagement />} />
+        <Route path="/order-admin" element={<OrderManagement />} />
       </Routes>
     </BrowserRouter>
   );
