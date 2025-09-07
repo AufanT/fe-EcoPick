@@ -13,6 +13,8 @@ import Products from "./User/products";
 import Register from "./User/register";
 import Contact from "./User/contact";
 import About from "./User/about";
+import AddProduct from "./Admin/addproduct"
+import UserManagement from "./Admin/usermanagement";
 
 const App = () => {
   useEffect(() => {
@@ -33,7 +35,8 @@ const App = () => {
         <Route path="/register" element={<Register />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/about" element={<About />} />
-
+        <Route path="/addproduct" element={<AddProduct />} />
+        <Route path="/usermanagement" element={<UserManagement />} />
       </Routes>
     </BrowserRouter>
   );

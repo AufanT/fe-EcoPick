@@ -1,5 +1,7 @@
 import React from "react";
 import { FaHome, FaUsers, FaBoxOpen, FaList } from "react-icons/fa";
+import { Link } from 'react-router-dom';
+
 
 const products = [
   { photo: "/images/tumbler.png", name: "Stainless Steel Tumbler", price: "Rp 130.000", stock: 120 },
@@ -21,13 +23,13 @@ export default function DashboardAdmin() {
             <FaHome /> Dashboard
           </a>
           <a href="#" className="flex items-center gap-3 hover:text-green-800">
-            <FaList /> Category Management
-          </a>
-          <a href="#" className="flex items-center gap-3 hover:text-green-800">
             <FaBoxOpen /> Order Management
           </a>
           <a href="#" className="flex items-center gap-3 hover:text-green-800">
             <FaUsers /> User Management
+          </a>
+          <a href="#" className="flex items-center gap-3 hover:text-green-800">
+            <FaUsers /> Edit Profile
           </a>
         </nav>
       </aside>
@@ -43,7 +45,9 @@ export default function DashboardAdmin() {
         </header>
 
         <button className="bg-black text-white px-4 py-2 rounded-md mb-6">
-          <link> </link>
+          <Link to="/addproduct">
+            Add Product
+          </Link>
         </button>
 
         {/* Product Table */}
@@ -84,9 +88,8 @@ export default function DashboardAdmin() {
           {[1, 2, 3, 4, 5].map((num) => (
             <button
               key={num}
-              className={`px-3 py-1 rounded-md ${
-                num === 1 ? "bg-black text-white" : "border text-gray-600"
-              }`}
+              className={`px-3 py-1 rounded-md ${num === 1 ? "bg-black text-white" : "border text-gray-600"
+                }`}
             >
               {num}
             </button>

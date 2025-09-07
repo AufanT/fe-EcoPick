@@ -11,14 +11,14 @@ export default function OrderManagement() {
           <a href="#" className="flex items-center gap-3 hover:text-green-800">
             <FaHome /> Dashboard
           </a>
-          <a href="#" className="flex items-center gap-3 hover:text-green-800">
-            <FaList /> Category Management
-          </a>
           <a href="#" className="flex items-center gap-3 bg-[#355317] p-2 rounded-md">
             <FaBoxOpen /> Order Management
           </a>
           <a href="#" className="flex items-center gap-3 hover:text-green-800">
             <FaUsers /> User Management
+          </a>
+          <a href="#" className="flex items-center gap-3 hover:text-green-800">
+            <FaUsers /> Edit Profile
           </a>
         </nav>
       </aside>
