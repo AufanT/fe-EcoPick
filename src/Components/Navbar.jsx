@@ -6,6 +6,7 @@ import 'aos/dist/aos.css';
 const Navbar = () => {
   const [hideNav, setHideNav] = useState(false);
   const [lastScrollY, setLastScrollY] = useState(0);
+  const [cartCount, setCartCount] = useState(0);
 
   useEffect(() => {
     AOS.init({ duration: 1000, once: true });
@@ -19,8 +20,26 @@ const Navbar = () => {
       setLastScrollY(window.scrollY);
     };
 
+    // Load initial cart count from localStorage
+    const savedCart = localStorage.getItem('ecopick_cart');
+    if (savedCart) {
+      const parsedCart = JSON.parse(savedCart);
+      const count = parsedCart.reduce((total, item) => total + item.quantity, 0);
+      setCartCount(count);
+    }
+
+    // Listen for cart updates
+    const handleCartUpdate = (event) => {
+      setCartCount(event.detail.cartCount);
+    };
+
     window.addEventListener('scroll', controlNavbar);
-    return () => window.removeEventListener('scroll', controlNavbar);
+    window.addEventListener('cartUpdated', handleCartUpdate);
+    
+    return () => {
+      window.removeEventListener('scroll', controlNavbar);
+      window.removeEventListener('cartUpdated', handleCartUpdate);
+    };
   }, [lastScrollY]);
 
   return (
@@ -30,13 +49,13 @@ const Navbar = () => {
                  ${hideNav ? '-translate-y-full' : 'translate-y-0'}`}
       data-aos="fade-down"
     >
-      {/* Kiri: Menu */}
+      {/* Kiri: Menu
       <div className="flex space-x-8">
         <a href="#" className="hover:text-green-400 transition-colors font-medium">Shop</a>
         <a href="#" className="hover:text-green-400 transition-colors font-medium">About</a>
         <a href="#" className="hover:text-green-400 transition-colors font-medium">Impact</a>
         <a href="#" className="hover:text-green-400 transition-colors font-medium">FAQ</a>
-      </div>
+      </div> */}
 
       {/* Tengah: Logo */}
       <a href="#" className="flex items-center space-x-2">
@@ -44,16 +63,35 @@ const Navbar = () => {
         <span className="text-2xl font-bold tracking-wider">EcoPick</span>
       </a>
 
-      {/* Kanan: Akun & Tombol Auth */}
-      <div className="flex items-center space-x-4">
-        <a href="#" className="hover:text-green-400 transition-colors font-medium">My Account</a>
+      {/* Search Bar */}
+      <div className="flex-1 max-w-md mx-8">
+        <div className="relative">
+          <input
+            type="text"
+            placeholder="Cari produk..."
+            className="w-full px-4 py-2 pl-10 pr-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent"
+          />
+          <svg 
+            xmlns="http://www.w3.org/2000/svg" 
+            fill="none" 
+            viewBox="0 0 24 24" 
+            strokeWidth="1.5" 
+            stroke="currentColor" 
+            className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-white/70"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+          </svg>
+        </div>
+      </div>
 
+      {/* Kanan: Tombol Auth & Ikon */}
+      <div className="flex items-center space-x-4">
         <button className="px-4 py-2 border border-white rounded-full hover:bg-white hover:text-green-700 transition-colors">
-          Masuk
+          Sign In
         </button>
 
         <button className="px-4 py-2 bg-green-600 rounded-full hover:bg-green-700 transition-colors">
-          Daftar
+          Sign Up
         </button>
 
         {/* Ikon Favorit */}
@@ -68,6 +106,7 @@ const Navbar = () => {
           </Link>
         </button>
 
+
         {/* Ikon Keranjang */}
         <button className="relative ml-2">
           <Link to="/cart">
@@ -77,7 +116,7 @@ const Navbar = () => {
               <circle cx="18" cy="20" r="1.5" />
             </svg>
             <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
-              0
+              {cartCount}
             </span>
           </Link>
         </button>
