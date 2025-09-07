@@ -8,8 +8,11 @@ import CartPage from "./User/cart";
 import DashboardAdmin from "./Admin/dashboardadmin";
 import ProductDetail from "./User/detailproduk";
 import Checkout from "./User/checkout";
-import CategoryManagement from "./Admin/categorymanagement";
-import OrderManagement from "./Admin/ordermanagement";
+import Login from "./User/login";
+import Products from "./User/products";
+import Register from "./User/register";
+import Contact from "./User/contact";
+import About from "./User/about";
 
 const App = () => {
   useEffect(() => {
@@ -25,8 +28,12 @@ const App = () => {
         <Route path="/dashboard-admin" element={<DashboardAdmin />} />
         <Route path="/product/:id" element={<ProductDetail />} />
         <Route path="/checkout/:id" element={<Checkout />} />
-        <Route path="/category-admin" element={<CategoryManagement />} />
-        <Route path="/order-admin" element={<OrderManagement />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/products" element={<Products />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/contact" element={<Contact />} />
+        <Route path="/about" element={<About />} />
+
       </Routes>
     </BrowserRouter>
   );

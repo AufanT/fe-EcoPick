@@ -136,7 +136,7 @@ const Footer = () => {
         </div>
         <hr className="mt-[30px] border-white/30" />
         <div className="flex items-center justify-center pb-8 pt-[9px] md:py-8">
-          <p className="font-inter text-[14px] font-normal text-white">Copyright © 2024 yoursite.com</p>
+          <p className="font-inter text-[14px] font-normal text-white">©2025 EcoPick. All Rights Reserved</p>
         </div>
       </div>
     </div>
