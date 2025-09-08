@@ -15,6 +15,8 @@ import Contact from "./User/contact";
 import About from "./User/about";
 import AddProduct from "./Admin/addproduct"
 import UserManagement from "./Admin/usermanagement";
+import OrderManagement from "./Admin/ordermanagement";
+import EditProfile from "./Admin/editprofile";
 
 const App = () => {
   useEffect(() => {
@@ -37,6 +39,8 @@ const App = () => {
         <Route path="/about" element={<About />} />
         <Route path="/addproduct" element={<AddProduct />} />
         <Route path="/usermanagement" element={<UserManagement />} />
+        <Route path="/ordermanagement" element={<OrderManagement />} />
+        <Route path="/editprofile" element={<EditProfile />} />
       </Routes>
     </BrowserRouter>
   );

@@ -1,5 +1,5 @@
 import React from 'react'
-import { FaHome, FaList, FaBoxOpen, FaUsers } from 'react-icons/fa';
+import { FaHome, FaBoxOpen, FaUsers, FaRegUserCircle } from 'react-icons/fa';
 
 export default function UserManagement() {
     return (
@@ -18,7 +18,7 @@ export default function UserManagement() {
                         <FaUsers /> User Management
                     </a>
                     <a href="#" className="flex items-center gap-3 hover:text-green-800">
-                        <FaUsers /> Edit Profile
+                        <FaRegUserCircle /> Edit Profile
                     </a>
                 </nav>
             </aside>
