@@ -57,7 +57,7 @@ export default function DashboardAdmin() {
               <tr className="text-gray-700">
                 <th className="p-4">PHOTO</th>
                 <th className="p-4">PRODUCT NAME</th>
-                <th className="p-4">STATUS</th>
+                <th className="p-4">CATEGORY</th>
                 <th className="p-4">PRICE</th>
                 <th className="p-4">STOCK</th>
                 <th className="p-4">ACTION</th>
