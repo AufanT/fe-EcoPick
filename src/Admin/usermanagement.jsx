@@ -73,6 +73,21 @@ export default function UserManagement() {
                     </table>
                 </div>
 
+                {/* Pagination */}
+                <div className="flex justify-center items-center gap-2 mt-6">
+                    <button className="border px-3 py-1 rounded-md text-gray-400">&lt;</button>
+                    {[1, 2, 3, 4, 5].map((num) => (
+                        <button
+                            key={num}
+                            className={`px-3 py-1 rounded-md ${num === 1 ? "bg-black text-white" : "border text-gray-600"
+                                }`}
+                        >
+                            {num}
+                        </button>
+                    ))}
+                    <button className="border px-3 py-1 rounded-md text-gray-400">&gt;</button>
+                </div>
+
                 <footer className="text-center text-gray-600 mt-8">
                     ©2025 EcoPick. All Rights Reserved
                 </footer>
