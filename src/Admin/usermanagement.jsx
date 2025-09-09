@@ -1,6 +1,16 @@
 import React from 'react'
 import { FaHome, FaBoxOpen, FaUsers, FaRegUserCircle } from 'react-icons/fa';
 
+const users = [
+    { name: "Raja Wijaya", username: "@rajawjy_", email: "rajawijaya12@gail.com", phone: "08123456789", date: "12/07/2025", total: "1" },
+    { name: "Budi Sanjaya", username: "@budi_sanjaya", email: "budi_sanjaya@gmail.com", phone: "082298765432", date: "06/06/2025", total: "2" },
+    { name: "Putri Amelia", username: "@ptr.amelia", email: "ptrameliaa@gmail.com", phone: "082354679810", date: "01/06/2025", total: "3" },
+    { name: "Lina Marlina", username: "@marlinlina", email: "marlina1212@gmail.com", phone: "082356891011", date: "28/05/2025", total: "2" },
+    { name: "Fajar Maulana", username: "@fjr.maul", email: "jarfajar1234@gmail.com", phone: "085210032002", date: "14/05/2025", total: "2" },
+    { name: "Mikayla Pramudya", username: "@mikaylapra", email: "mikaylaprmdy@gmail.com", phone: "081277665443", date: "25/04/2025", total: "4" },
+    { name: "Ridwan Putra", username: "@rdwn_ptr", email: "ridwanptr4@gmail.com", phone: "082211522045", date: "20/04/2025", total: "2" }
+];
+
 export default function UserManagement() {
     return (
         <div className="flex min-h-screen bg-gray-100">
@@ -22,6 +32,52 @@ export default function UserManagement() {
                     </a>
                 </nav>
             </aside>
+
+
+            {/* Main Content */}
+            <main className="flex-1 p-8">
+                <header className="flex justify-between items-center mb-6">
+                    <h2 className="text-3xl font-bold">Dashboard</h2>
+                    <div className="flex items-center gap-4">
+                        <span>Admin Profile</span>
+                        <div className="w-8 h-8 bg-gray-300 rounded-full" />
+                    </div>
+                </header>
+
+
+                {/* User Table */}
+                <div className="bg-white rounded-lg shadow">
+                    <table className="w-full text-left border p-4 border-gray-400">
+                        <thead className="bg-gray-200 border-b border-gray-600">
+                            <tr className="text-gray-700 ">
+                                <th className="p-4">NAME</th>
+                                <th className="p-4">USERNAME</th>
+                                <th className="p-4">EMAIL</th>
+                                <th className="p-4">PHONE</th>
+                                <th className="p-4">DATE</th>
+                                <th className="p-4">TOTAL ORDERS</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {users.map((user, index) => (
+                                <tr key={index} className="border-b border-gray-400 hover:bg-gray-50">
+                                    <td className="p-4">{user.name}</td>
+                                    <td className="p-4">{user.username}</td>
+                                    <td className="p-4">{user.email}</td>
+                                    <td className="p-4">{user.phone}</td>
+                                    <td className="p-4">{user.date}</td>
+                                    <td className="p-4">{user.total}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+
+                <footer className="text-center text-gray-600 mt-8">
+                    ©2025 EcoPick. All Rights Reserved
+                </footer>
+
+            </main>
         </div>
     )
 };
