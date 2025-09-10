@@ -13,10 +13,12 @@ import Products from "./User/products";
 import Register from "./User/register";
 import Contact from "./User/contact";
 import About from "./User/about";
+import Favorites from "./User/Favorite";
 import AddProduct from "./Admin/addproduct"
 import UserManagement from "./Admin/usermanagement";
 import OrderManagement from "./Admin/ordermanagement";
 import EditProfile from "./Admin/editprofile";
+import OrderDetailsPage from "./User/orderdetails";
 
 const App = () => {
   useEffect(() => {
@@ -31,16 +33,20 @@ const App = () => {
         <Route path="/cart" element={<CartPage />} />
         <Route path="/dashboard-admin" element={<DashboardAdmin />} />
         <Route path="/product/:id" element={<ProductDetail />} />
-        <Route path="/checkout/:id" element={<Checkout />} />
+        <Route path="/checkout" element={<Checkout />} />
         <Route path="/login" element={<Login />} />
         <Route path="/products" element={<Products />} />
         <Route path="/register" element={<Register />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/about" element={<About />} />
+        <Route path="/favorites" element={<Favorites />} />
         <Route path="/addproduct" element={<AddProduct />} />
         <Route path="/usermanagement" element={<UserManagement />} />
         <Route path="/ordermanagement" element={<OrderManagement />} />
         <Route path="/editprofile" element={<EditProfile />} />
+        <Route path="/orderdetails" element={<OrderDetailsPage />} />
+
+
       </Routes>
     </BrowserRouter>
   );

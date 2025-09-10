@@ -7,6 +7,7 @@ const Navbar = () => {
   const [hideNav, setHideNav] = useState(false);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [cartCount, setCartCount] = useState(0);
+  const [favoritesCount, setFavoritesCount] = useState(0);
 
   useEffect(() => {
     AOS.init({ duration: 1000, once: true });
@@ -28,17 +29,31 @@ const Navbar = () => {
       setCartCount(count);
     }
 
+    // Load initial favorites count from localStorage
+    const savedFavorites = localStorage.getItem('ecopick_favorites');
+    if (savedFavorites) {
+      const favoriteIds = JSON.parse(savedFavorites);
+      setFavoritesCount(favoriteIds.length);
+    }
+
     // Listen for cart updates
     const handleCartUpdate = (event) => {
       setCartCount(event.detail.cartCount);
     };
 
+    // Listen for favorites updates
+    const handleFavoritesUpdate = (event) => {
+      setFavoritesCount(event.detail.favoritesCount);
+    };
+
     window.addEventListener('scroll', controlNavbar);
     window.addEventListener('cartUpdated', handleCartUpdate);
+    window.addEventListener('favoritesUpdated', handleFavoritesUpdate);
     
     return () => {
       window.removeEventListener('scroll', controlNavbar);
       window.removeEventListener('cartUpdated', handleCartUpdate);
+      window.removeEventListener('favoritesUpdated', handleFavoritesUpdate);
     };
   }, [lastScrollY]);
 
@@ -83,16 +98,15 @@ const Navbar = () => {
           </svg>
         </div>
       </div>
-
       {/* Kanan: Tombol Auth & Ikon */}
       <div className="flex items-center space-x-4">
-        <button className="px-4 py-2 border border-white rounded-full hover:bg-white hover:text-green-700 transition-colors">
+        <Link to="/login" className="px-4 py-2 border border-white rounded-full hover:bg-white hover:text-green-700 transition-colors">
           Sign In
-        </button>
+        </Link>
 
-        <button className="px-4 py-2 bg-green-600 rounded-full hover:bg-green-700 transition-colors">
+        <Link to="/register" className="px-4 py-2 bg-green-600 rounded-full hover:bg-green-700 transition-colors">
           Sign Up
-        </button>
+        </Link>
 
         {/* Ikon Favorit */}
         <button className="relative ml-2">
@@ -101,7 +115,7 @@ const Navbar = () => {
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 21l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.18L12 21z" />
             </svg>
             <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
-              0
+              {favoritesCount}
             </span>
           </Link>
         </button>

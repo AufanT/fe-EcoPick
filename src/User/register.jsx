@@ -87,10 +87,21 @@ const Register = () => {
 
   return (
     <div className="min-h-screen bg-green-50">
-      <Navbar />
-      
-      <div className="pt-24 pb-16 px-4">
+      <div className="pt-8 pb-16 px-4">
         <div className="max-w-md mx-auto">
+          {/* Back Button */}
+          <div className="mb-8">
+            <Link 
+              to="/" 
+              className="inline-flex items-center gap-3 px-6 py-3 bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md hover:border-green-300 transition-all duration-300 group"
+            >
+              <svg className="w-5 h-5 text-gray-600 group-hover:text-green-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+              <span className="text-gray-700 group-hover:text-green-600 font-medium transition-colors">Back to Dashboard</span>
+            </Link>
+          </div>
+
           <div className="bg-white rounded-2xl shadow-xl p-8">
             {/* Header */}
             <div className="text-center mb-8">

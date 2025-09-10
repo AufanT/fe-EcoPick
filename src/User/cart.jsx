@@ -1,247 +1,219 @@
 import React, { useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 
+// The main App component that renders the cart page.
 const CartPage = () => {
-  // Data keranjang (sementara hardcoded, nanti bisa dari context/backend)
+  // Hardcoded cart data, similar to the provided component.
   const [items, setItems] = useState([
-    { id: 1, name: "Sikat Gigi Bambu", price: 25000, quantity: 2, image: "/produk1.jpg" },
-    { id: 2, name: "Sedotan Stainless", price: 18000, quantity: 1, image: "/produk2.jpg" },
+    {
+      id: 1,
+      name: "Stainless Steel Tumbler",
+      price: 130000,
+      quantity: 1,
+      image: "https://placehold.co/100x100/A7F3D0/065F46?text=Tumbler",
+    },
+    {
+      id: 2,
+      name: "Stainless Steel Tumbler",
+      price: 130000,
+      quantity: 1,
+      image: "https://placehold.co/100x100/A7F3D0/065F46?text=Tumbler",
+    },
+    {
+      id: 3,
+      name: "Ceramic Plate",
+      price: 40000,
+      quantity: 1,
+      image: "https://placehold.co/100x100/A7F3D0/065F46?text=Plate",
+    },
   ]);
 
+  // Function to calculate shipping cost based on the city.
+  const shippingByCity = (city) =>
+    ({
+      Jakarta: 10000,
+      Bandung: 12000,
+      Surabaya: 15000,
+      Yogyakarta: 13000,
+    }[city] ?? 10000); // Default to Jakarta's shipping if city is not found
+
+  // State for city selection.
+  const [city, setCity] = useState("Jakarta");
+
+  // Calculate subtotal using useMemo for performance.
+  const subtotal = useMemo(
+    () => items.reduce((acc, item) => acc + item.price * item.quantity, 0),
+    [items]
+  );
+
+  // Calculate shipping cost using useMemo.
+  const shipping = useMemo(() => shippingByCity(city), [city]);
+
+  // Calculate total price.
+  const total = subtotal + shipping;
+
+  // Handles incrementing an item's quantity.
   const increment = (id) => {
-    setItems((prev) => prev.map((it) => it.id === id ? { ...it, quantity: it.quantity + 1 } : it));
+    setItems((prev) =>
+      prev.map((it) =>
+        it.id === id ? { ...it, quantity: it.quantity + 1 } : it
+      )
+    );
   };
+
+  // Handles decrementing an item's quantity, with a minimum of 1.
   const decrement = (id) => {
-    setItems((prev) => prev.map((it) => it.id === id ? { ...it, quantity: Math.max(1, it.quantity - 1) } : it));
+    setItems((prev) =>
+      prev.map((it) =>
+        it.id === id ? { ...it, quantity: Math.max(1, it.quantity - 1) } : it
+      )
+    );
   };
+
+  // Handles removing an item from the cart.
   const removeItem = (id) => {
     setItems((prev) => prev.filter((it) => it.id !== id));
   };
-  const clearAll = () => setItems([]);
 
-  const [city, setCity] = useState("Jakarta");
-  const shippingByCity = (city) => ({
-    Jakarta: 10000,
-    Bandung: 12000,
-    Surabaya: 15000,
-    Yogyakarta: 13000,
-  })[city] ?? 18000;
-
-  // Hitung subtotal
-  const subtotal = useMemo(() => items.reduce((acc, item) => acc + item.price * item.quantity, 0), [items]);
-
-  const shipping = useMemo(() => shippingByCity(city), [city]);
-  const [voucher, setVoucher] = useState("");
-  const discount = useMemo(() => {
-    if (voucher.trim().toUpperCase() === "ECO10") return Math.round(subtotal * 0.1);
-    if (voucher.trim().toUpperCase() === "FREESHIP") return shipping; // gratis ongkir
-    return 0;
-  }, [voucher, subtotal, shipping]);
-  const total = Math.max(0, subtotal + shipping - discount);
-
-  // ID pesanan (seharusnya dari backend)
-  // const orderId = "INV-20250904-001";
+  // Formats a number to Indonesian Rupiah currency.
+  const formatRupiah = (value) => {
+    return `Rp ${new Intl.NumberFormat("id-ID").format(value)}`;
+  };
 
   return (
-    <div className="min-h-screen pt-28 px-4 md:px-8 lg:px-20">
-      {/* Header */}
-      <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-8">
-          <h1 className="text-4xl md:text-5xl font-bold mb-3">
-            Keranjang Belanja
+    <div className="bg-gray-100 font-sans p-8 min-h-screen">
+      <div className="max-w-7xl mx-auto py-12">
+        {/* Header Section */}
+        <div className="text-center mb-12">
+          <h1 className="text-4xl md:text-5xl font-bold text-gray-800 mb-2">
+            My Cart
           </h1>
-          <p className="text-gray-600 text-lg">Kelola produk ramah lingkungan pilihan Anda</p>
+          <p className="text-gray-500 text-lg">
+            Your selected eco-friendly products
+          </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
-          {/* List Item */}
-          <div className="lg:col-span-2 space-y-6">
-            {/* Cart Header */}
-            <div className="bg-white/80 backdrop-blur-sm p-6 rounded-2xl shadow-lg border border-white/20">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center">
-                    <span className="text-white font-bold">{items.length}</span>
-                  </div>
-                  <span className="text-gray-700 font-medium">
-                    {items.length} {items.length === 1 ? 'item' : 'items'} dalam keranjang
-                  </span>
+        <div className="flex flex-col lg:flex-row gap-10">
+          {/* Cart Items List */}
+          <div className="lg:w-2/3 space-y-6">
+            {items.length === 0 ? (
+              <div className="bg-white p-12 rounded-3xl shadow-lg text-center">
+                <div className="flex items-center justify-center w-24 h-24 rounded-full bg-green-100 mx-auto mb-6">
+                  <span className="text-5xl text-green-600">🛒</span>
                 </div>
-                {items.length > 0 && (
-                  <button 
-                    onClick={clearAll} 
-                    className="px-4 py-2 text-sm text-red-600 hover:text-white hover:bg-red-500 border border-red-200 hover:border-red-500 rounded-full transition-all duration-300 font-medium"
-                  >
-                    Hapus Semua
-                  </button>
-                )}
+                <h3 className="text-2xl font-bold text-gray-800 mb-2">
+                  Your Cart is Empty
+                </h3>
+                <p className="text-gray-500 mb-6">
+                  Add some products to continue shopping.
+                </p>
+                <a
+                  href="#"
+                  className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-green-600 text-white font-semibold transition-all hover:bg-green-700"
+                >
+                  <span className="text-xl">←</span> Back to Shop
+                </a>
               </div>
-            </div>
-
-            {/* Cart Items or Empty State */}
-            <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20">
-              {items.length === 0 ? (
-                <div className="text-center py-16 px-6">
-                  <div className="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <span className="text-4xl">🛒</span>
+            ) : (
+              items.map((item) => (
+                <div
+                  key={item.id}
+                  className="bg-white p-6 rounded-3xl shadow-lg flex flex-col md:flex-row items-center gap-6"
+                >
+                  {/* Checkbox and Image */}
+                  <div className="flex items-center gap-6 w-full md:w-auto">
+                    <input
+                      type="checkbox"
+                      className="form-checkbox h-5 w-5 text-green-600 rounded-full border-gray-300 focus:ring-green-500"
+                      defaultChecked
+                    />
+                    <div className="w-24 h-24 md:w-28 md:h-28 flex-shrink-0 bg-gray-100 rounded-2xl overflow-hidden">
+                      <img
+                        src={item.image}
+                        alt={item.name}
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          e.target.src =
+                            "https://placehold.co/100x100/A7F3D0/065F46?text=Image+Not+Found";
+                        }}
+                      />
+                    </div>
                   </div>
-                  <h3 className="text-xl font-semibold text-gray-700 mb-2">Keranjang Anda Kosong</h3>
-                  <p className="text-gray-500 mb-6">Temukan produk eco-friendly terbaik untuk gaya hidup berkelanjutan</p>
-                  <button className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-green-600 hover:bg-green-700 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
-                    <span>🌱</span>
-                    Mulai Belanja Sekarang
+
+                  {/* Product Details */}
+                  <div className="flex-1 text-center md:text-left">
+                    <h3 className="text-xl md:text-2xl font-bold text-gray-800 mb-1">
+                      {item.name}
+                    </h3>
+                    <p className="text-green-600 text-xl md:text-2xl font-bold">
+                      {formatRupiah(item.price)}
+                    </p>
+                  </div>
+
+                  {/* Quantity Controls */}
+                  <div className="flex items-center justify-center md:justify-end gap-2 my-4 md:my-0">
+                    <div className="inline-flex items-center bg-gray-100 rounded-full shadow-inner">
+                      <button
+                        onClick={() => decrement(item.id)}
+                        className="w-10 h-10 flex items-center justify-center text-gray-600 rounded-full hover:bg-gray-200 transition-colors font-bold text-lg"
+                      >
+                        −
+                      </button>
+                      <div className="w-12 h-10 flex items-center justify-center text-gray-800 font-bold text-lg">
+                        {item.quantity}
+                      </div>
+                      <button
+                        onClick={() => increment(item.id)}
+                        className="w-10 h-10 flex items-center justify-center text-gray-600 rounded-full hover:bg-gray-200 transition-colors font-bold text-lg"
+                      >
+                        +
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Remove Button */}
+                  <button
+                    onClick={() => removeItem(item.id)}
+                    className="md:ml-auto px-4 py-2 text-sm text-red-600 hover:text-white hover:bg-red-500 rounded-full transition-all duration-300 font-medium"
+                  >
+                    Delete
                   </button>
                 </div>
-              ) : (
-                <div className="p-6 space-y-6">
-                  {items.map((item, index) => (
-                    <div 
-                      key={item.id} 
-                      className="group flex flex-col md:flex-row items-center gap-6 p-6 bg-white rounded-xl border border-gray-100 hover:border-green-200 hover:shadow-md transition-all duration-300"
-                    >
-                      <div className="relative w-24 h-24 md:w-28 md:h-28 flex-shrink-0">
-                        <div className="w-full h-full bg-green-100 rounded-xl overflow-hidden shadow-md">
-                          <img 
-                            src={item.image} 
-                            alt={item.name} 
-                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" 
-                          />
-                        </div>
-                        <div className="absolute -top-2 -right-2 w-6 h-6 bg-green-500 text-white text-xs rounded-full flex items-center justify-center font-bold shadow-md">
-                          {index + 1}
-                        </div>
-                      </div>
-
-                      <div className="flex-1 text-center md:text-left">
-                        <h3 className="text-lg md:text-xl font-bold text-gray-800 mb-2 group-hover:text-green-600 transition-colors">
-                          {item.name}
-                        </h3>
-                        <div className="flex items-center justify-center md:justify-start gap-2 mb-4">
-                          <span className="text-2xl font-bold text-green-600">
-                            Rp {item.price.toLocaleString("id-ID")}
-                          </span>
-                          <span className="text-sm text-gray-500">per item</span>
-                        </div>
-
-                        {/* Quantity Controls */}
-                        <div className="inline-flex items-center bg-white rounded-full shadow-md border border-gray-200 overflow-hidden">
-                          <button 
-                            onClick={() => decrement(item.id)} 
-                            className="w-10 h-10 flex items-center justify-center hover:bg-red-50 hover:text-red-600 transition-colors font-bold text-lg"
-                          >
-                            −
-                          </button>
-                          <div className="w-12 h-10 flex items-center justify-center bg-green-50 font-bold text-lg">
-                            {item.quantity}
-                          </div>
-                          <button 
-                            onClick={() => increment(item.id)} 
-                            className="w-10 h-10 flex items-center justify-center hover:bg-green-50 hover:text-green-600 transition-colors font-bold text-lg"
-                          >
-                            +
-                          </button>
-                        </div>
-                      </div>
-
-                      <div className="text-center md:text-right flex-shrink-0">
-                        <div className="text-sm text-gray-500 mb-1">Subtotal</div>
-                        <div className="text-xl md:text-2xl font-bold text-green-600 mb-3">
-                          Rp {(item.price * item.quantity).toLocaleString("id-ID")}
-                        </div>
-                        <button 
-                          onClick={() => removeItem(item.id)} 
-                          className="px-4 py-2 text-sm text-red-600 hover:text-white hover:bg-red-500 border border-red-200 hover:border-red-500 rounded-full transition-all duration-300 font-medium"
-                        >
-                          🗑️ Hapus
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
+              ))
+            )}
           </div>
 
-          {/* Ringkasan Pesanan */}
-          <div className="bg-white/90 backdrop-blur-sm p-8 rounded-2xl shadow-xl border border-white/30 sticky top-24 h-fit">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
-                <span className="text-white text-sm font-bold">📋</span>
+          {/* Order Summary Section */}
+          <div className="lg:w-1/3 bg-white p-8 rounded-3xl shadow-xl sticky top-8 h-fit">
+            <h2 className="text-3xl font-bold text-gray-800 mb-6">
+              Order Summary
+            </h2>
+
+            <div className="space-y-4 text-gray-600">
+              <div className="flex justify-between items-center pb-2 border-b border-gray-200">
+                <span className="font-medium">Subtotal</span>
+                <span className="font-bold text-lg">
+                  {formatRupiah(subtotal)}
+                </span>
               </div>
-              <h2 className="text-2xl font-bold text-gray-800">Ringkasan Pesanan</h2>
-            </div>
-
-            {/* City Selection */}
-            <div className="mb-6">
-              <label className="block text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
-                🏙️ Pilih Kota Pengiriman
-              </label>
-              <select 
-                value={city} 
-                onChange={(e) => setCity(e.target.value)} 
-                className="w-full p-4 rounded-xl border-2 border-gray-200 focus:border-green-500 focus:outline-none bg-white shadow-sm text-gray-700 font-medium transition-colors"
-              >
-                {['Jakarta','Bandung','Surabaya','Yogyakarta','Lainnya'].map(c => (
-                  <option key={c} value={c}>{c}</option>
-                ))}
-              </select>
-            </div>
-
-            {/* Voucher */}
-            <div className="mb-8">
-              <label className="block text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
-                🎫 Kode Voucher
-              </label>
-              <div className="flex gap-3">
-                <input 
-                  value={voucher} 
-                  onChange={(e)=>setVoucher(e.target.value)} 
-                  placeholder="ECO10 / FREESHIP" 
-                  className="flex-1 p-4 rounded-xl border-2 border-gray-200 focus:border-green-500 focus:outline-none shadow-sm transition-colors" 
-                />
-                <button className="px-6 py-4 rounded-xl bg-gray-100 hover:bg-gray-200 border border-gray-300 font-medium transition-all duration-300 hover:shadow-md">
-                  Terapkan
-                </button>
+              <div className="flex justify-between items-center pb-2 border-b border-gray-200">
+                <span className="font-medium">Shipping Fee</span>
+                <span className="font-bold text-lg">
+                  {formatRupiah(shipping)}
+                </span>
+              </div>
+              <div className="flex justify-between items-center pt-4">
+                <span className="text-xl font-bold text-gray-800">Total</span>
+                <span className="text-2xl font-bold text-green-600">
+                  {formatRupiah(total)}
+                </span>
               </div>
             </div>
 
-            {/* Order Summary */}
-            <div className="space-y-4 mb-6">
-              <div className="flex justify-between items-center py-2">
-                <span className="text-gray-600 font-medium">Subtotal</span>
-                <span className="font-bold text-lg">Rp {subtotal.toLocaleString("id-ID")}</span>
-              </div>
-              <div className="flex justify-between items-center py-2">
-                <span className="text-gray-600 font-medium">Ongkos Kirim</span>
-                <span className="font-bold text-lg">Rp {shipping.toLocaleString("id-ID")}</span>
-              </div>
-              {discount > 0 && (
-                <div className="flex justify-between items-center py-2 text-green-600 bg-green-50 rounded-lg px-4">
-                  <span className="font-medium flex items-center gap-2">
-                    🎉 Diskon
-                  </span>
-                  <span className="font-bold text-lg">- Rp {discount.toLocaleString("id-ID")}</span>
-                </div>
-              )}
-            </div>
-
-            <hr className="border-2 border-gray-100 my-6" />
-
-            <div className="flex justify-between items-center py-4 bg-green-50 rounded-xl px-6 mb-8">
-              <span className="text-xl font-bold text-gray-800">Total Pembayaran</span>
-              <span className="text-2xl font-bold text-green-600">
-                Rp {total.toLocaleString("id-ID")}
-              </span>
-            </div>
-
-            <button className="w-full py-4 rounded-xl bg-green-600 hover:bg-green-700 text-white font-bold text-lg shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105 flex items-center justify-center gap-3">
-              <span>💳</span>
-              Lanjutkan ke Pembayaran
-              <span>→</span>
+            <button className="w-full py-4 rounded-xl bg-green-600 text-white font-bold text-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 mt-8">
+              <Link to={`/checkout`}></Link>
+              Checkout
             </button>
-
-            <div className="mt-4 text-center">
-              <p className="text-xs text-gray-500">🔒 Pembayaran aman & terenkripsi</p>
-            </div>
           </div>
         </div>
       </div>
