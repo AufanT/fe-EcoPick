@@ -1,7 +1,7 @@
 import React from 'react'
 import { FaHome, FaUsers, FaBoxOpen, FaRegUserCircle } from "react-icons/fa";
 import { TbTruckDelivery } from "react-icons/tb";
-import { BsBoxSeam } from "react-icons/bs";
+import { BsBoxSeam, BsArrowRight  } from "react-icons/bs";
 import { HiOutlineUserGroup } from "react-icons/hi";
 import { BiLineChart } from "react-icons/bi";
 import { Link } from 'react-router-dom';
@@ -50,7 +50,7 @@ export default function OrderManagement() {
           <div className="flex items-center gap-4">
             <span>Admin Profile</span>
             <div className="w-8 h-8 bg-gray-300 rounded-full" />
-            <Link to="/login" className="bg-green-600 text-white font-bold px-4 py-2 rounded-xl border-2 border-green-800">
+            <Link to="/login" className="bg-green-600 text-white font-bold px-4 py-2 rounded-xl border-1 border-green-800">
               Logout
             </Link>
           </div>
@@ -80,7 +80,6 @@ export default function OrderManagement() {
             ))}
           </div>
 
-
           <div className="bg-white mt-6 rounded-2xl shadow-2xl">
             <table className="w-full text-left border-gray-400">
               <thead className="border-b border-gray-300">
@@ -107,9 +106,14 @@ export default function OrderManagement() {
               </tbody>
             </table>
           </div>
+       
+       <Link to="#" className="flex justify-end text-sm items-center text-black font-semibold mt-4">
+          SEE ALL ORDER <BsArrowRight className="ml-2 text-2xl"/>
+        </Link>
+
         </div>
 
-        {/* Pagination */}
+        {/* Footer */}
         <footer className="text-center text-gray-600 mt-8">
           ©2025 EcoPick. All Rights Reserved
         </footer>

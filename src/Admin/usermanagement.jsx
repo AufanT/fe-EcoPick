@@ -1,5 +1,6 @@
 import React from 'react'
 import { FaHome, FaBoxOpen, FaUsers, FaRegUserCircle } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
 
 const users = [
     { name: "Raja Wijaya", username: "@rajawjy_", email: "rajawijaya12@gail.com", phone: "08123456789", date: "12/07/2025", total: "1" },
@@ -41,7 +42,7 @@ export default function UserManagement() {
                     <div className="flex items-center gap-4">
                         <span>Admin Profile</span>
                         <div className="w-8 h-8 bg-gray-300 rounded-full" />
-                        <Link to="/login" className="bg-green-600 text-white font-bold px-4 py-2 rounded-xl border-2 border-green-800">
+                        <Link to="/login" className="bg-green-600 text-white font-bold px-4 py-2 rounded-xl border-1 border-green-800">
                             Logout
                         </Link>
                     </div>
@@ -49,9 +50,9 @@ export default function UserManagement() {
 
 
                 {/* User Table */}
-                <div className="bg-white rounded-lg shadow">
-                    <table className="w-full text-left border p-4 border-gray-400">
-                        <thead className="bg-gray-200 border-b border-gray-600">
+                <div className="bg-white rounded-2xl shadow">
+                    <table className="w-full text-left shadow-2xl rounded-2xl">
+                        <thead className="bg-white border-b rounded-2xl border-gray-600">
                             <tr className="text-gray-700 ">
                                 <th className="p-4">NAME</th>
                                 <th className="p-4">USERNAME</th>
@@ -63,7 +64,7 @@ export default function UserManagement() {
                         </thead>
                         <tbody>
                             {users.map((user, index) => (
-                                <tr key={index} className="border-b border-gray-400 hover:bg-gray-50">
+                                <tr key={index} className="border-b border-white-400 hover:bg-gray-50">
                                     <td className="p-4">{user.name}</td>
                                     <td className="p-4">{user.username}</td>
                                     <td className="p-4">{user.email}</td>
