@@ -1,5 +1,7 @@
 import React from 'react';
 import { FaHome, FaBoxOpen, FaUsers, FaRegUserCircle } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
+import { HiUser } from "react-icons/hi2";
 
 export default function EditProfile() {
     return (
@@ -30,8 +32,21 @@ export default function EditProfile() {
                     <div className="flex items-center gap-4">
                         <span>Admin Profile</span>
                         <div className="w-8 h-8 bg-gray-300 rounded-full" />
+                        <Link to="/login" className="bg-green-600 text-white font-bold px-4 py-2 rounded-xl border-2 border-green-800">
+                            Logout
+                        </Link>
                     </div>
                 </header>
+                <div className="flex">
+                    <div className="bg-white rounded-2xl shadow p-6 flex flex-col items-center w-50 h-80">
+                        <div className="bg-gray-300 h-28 w-28 mt-13 flex items-center justify-center rounded-full">
+                            <HiUser className="text-6xl text-white" />
+                        </div>
+                        <button className="bg-black text-white px-4 py-2 rounded-md mt-4">
+                            Edit
+                        </button>
+                    </div>
+                </div>
             </main>
         </div>
     );

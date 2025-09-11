@@ -33,6 +33,9 @@ export default function AddProduct() {
           <div className="flex items-center gap-4">
             <span>Admin Profile</span>
             <div className="w-8 h-8 bg-gray-300 rounded-full" />
+            <Link to="/login" className="bg-green-600 text-white font-bold px-4 py-2 rounded-xl border-2 border-green-800">
+              Logout
+            </Link>
           </div>
         </header>
 

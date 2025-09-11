@@ -4,6 +4,7 @@ import { TbTruckDelivery } from "react-icons/tb";
 import { BsBoxSeam } from "react-icons/bs";
 import { HiOutlineUserGroup } from "react-icons/hi";
 import { BiLineChart } from "react-icons/bi";
+import { Link } from 'react-router-dom';
 
 const stats = [
   { title: "Total Order", value: "180", icon: <TbTruckDelivery className="w-6 h-6" />, percent: "+1.90%", up: true },
@@ -43,59 +44,77 @@ export default function OrderManagement() {
       </aside>
 
       {/* Main Content */}
-      <div className="flex-1 p-6">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 items-start">
-          {stats.map((item, i) => (
-            <div
-              key={i}
-              className="bg-white shadow-md rounded-2xl p-5 flex items-center gap-4 w-full h-auto"
-            >
-              {/* Icon */}
-              <div className="flex items-center justify-center w-12 h-12 rounded-full bg-white shadow-md text-xl">
-                {item.icon}
+      <main className="flex-1 p-8">
+        <header className="flex justify-between items-center mb-6">
+          <h2 className="text-3xl font-bold">Dashboard</h2>
+          <div className="flex items-center gap-4">
+            <span>Admin Profile</span>
+            <div className="w-8 h-8 bg-gray-300 rounded-full" />
+            <Link to="/login" className="bg-green-600 text-white font-bold px-4 py-2 rounded-xl border-2 border-green-800">
+              Logout
+            </Link>
+          </div>
+        </header>
+
+        <div className="flex-1 p-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 items-start">
+            {stats.map((item, i) => (
+              <div
+                key={i}
+                className="bg-white shadow-md rounded-2xl p-5 flex items-center gap-4 w-full h-auto"
+              >
+                {/* Icon */}
+                <div className="flex items-center justify-center w-9 h-9 rounded-full bg-white shadow-xl text-xl">
+                  {item.icon}
+                </div>
+
+                {/* Title + Value + Percent */}
+                <div className="flex flex-col">
+                  <span className="text-sm text-gray-400">{item.title}</span>
+                  <span className="text-xl font-semibold">{item.value}</span>
+                  <span className={`text-sm text-right ${item.up ? "text-green-500" : "text-red-500"}`}>
+                    {item.percent}
+                  </span>
+                </div>
               </div>
-
-              {/* Title + Value + Percent (vertikal) */}
-              <div className="flex flex-col">
-                <span className="text-sm text-gray-500">{item.title}</span>
-                <span className="text-xl font-semibold">{item.value}</span>
-                <span className={`text-sm text-right ${item.up ? "text-green-500" : "text-red-500"}`}>
-                  {item.percent}
-                </span>
-              </div>
-            </div>
-          ))}
-        </div>
-
-
-        <div className="bg-white rounded-2xl shadow">
-          <table className="w-full text-left border p-4 border-gray-400">
-            <thead className="bg-gray-200 border-b border-gray-600">
-              <tr className="text-gray-700 ">
-                <th className="p-4">ORDER ID</th>
-                <th className="p-4">NAME</th>
-                <th className="p-4">NAME PRODUCT</th>
-                <th className="p-4">DATE</th>
-                <th className="p-4">TOTAL</th>
-                <th className="p-4">STATUS</th>
-              </tr>
-            </thead>
-            <tbody>
-            {orders.map((order, index) => (
-              <tr key={index} className="border-b hover:bg-gray-50">
-                <td className="p-4">{order.orderId}</td>
-                <td className="p-4">{order.name}</td>
-                <td className="p-4">{order.productName}</td>
-                <td className="p-4">{order.date}</td>
-                <td className="p-4">{order.total}</td>
-                <td className="p-4 ">{order.status}</td>
-              </tr>
             ))}
-          </tbody>
-          </table>
+          </div>
 
+
+          <div className="bg-white mt-6 rounded-2xl shadow-2xl">
+            <table className="w-full text-left border-gray-400">
+              <thead className="border-b border-gray-300">
+                <tr className="text-black border-gray-200">
+                  <th className="p-4">ORDER ID</th>
+                  <th className="p-4">NAME</th>
+                  <th className="p-4">NAME PRODUCT</th>
+                  <th className="p-4">DATE</th>
+                  <th className="p-4">TOTAL</th>
+                  <th className="p-4">STATUS</th>
+                </tr>
+              </thead>
+              <tbody>
+                {orders.map((order, index) => (
+                  <tr key={index} className="items-center border-b hover:bg-gray-50">
+                    <td className="p-4">{order.orderId}</td>
+                    <td className="p-4">{order.name}</td>
+                    <td className="p-4">{order.product}</td>
+                    <td className="p-4">{order.date}</td>
+                    <td className="p-4">{order.total}</td>
+                    <td className={`p-4 ${order.status === "Delivered" ? "inline-flex bg-green-200 text-green-400 text-sm rounded-2xl py-1.5 text-center shadow" : order.status === "Packed" ? "inline-flex text-red-400 text-sm bg-red-200 rounded-2xl py-1.5 text-center shadow" : "inline-flex text-blue-400 text-sm bg-blue-200 rounded-2xl py-1.5 text-center shadow"}`}>{order.status}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
-      </div>
+
+        {/* Pagination */}
+        <footer className="text-center text-gray-600 mt-8">
+          ©2025 EcoPick. All Rights Reserved
+        </footer>
+
+      </main>
     </div>
   )
 };
