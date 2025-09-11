@@ -71,7 +71,7 @@ const handleSubmit = async (e) => {
         localStorage.setItem("user", JSON.stringify(user));
 
         // ✅ arahkan sesuai role
-        if (user.role_id === "1") {
+        if (user.role === "admin") {
           navigate("/dashboard-admin");
         } else {
           navigate("/");
