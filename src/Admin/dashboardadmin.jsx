@@ -1,95 +1,92 @@
 import React from "react";
 import { FaHome, FaUsers, FaBoxOpen, FaRegUserCircle } from "react-icons/fa";
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 import Sidebar from "../Components/Sidebar";
 
-const products = [
-  { photo: "/images/tumbler.png", name: "Stainless Steel Tumbler", category: "Tumbler", price: "Rp 130.000", stock: 120 },
-  { photo: "/images/straw.png", name: "Stainless Steel Straw", category: "Straw", price: "Rp 3.500", stock: 150 },
-  { photo: "/images/spoon.png", name: "Stainless Steel Spoon", category: "Spoon", price: "Rp 7.500", stock: 1810 },
-  { photo: "/images/cup.png", name: "Ceramic Cup", category: "Cup", price: "Rp 25.000", stock: 115 },
-  { photo: "/images/plate.png", name: "Ceramic Plate", category: "Plate", price: "Rp 40.000", stock: 110 },
-  { photo: "/images/toothbrush.png", name: "Bamboo Toothbrush", category: "Toothbrush", price: "Rp 12.500", stock: 125 },
-];
-
-export default function DashboardAdmin() {
+export default function EditProfile() {
   return (
     <div className="flex min-h-screen bg-gray-100">
-
       <Sidebar />
 
       {/* Main Content */}
       <main className="flex-1 p-8">
+        {/* Header */}
         <header className="flex justify-between items-center mb-6">
-          <h2 className="text-3xl font-bold">Dashboard</h2>
+          <h2 className="text-3xl font-bold">Admin Profile</h2>
           <div className="flex items-center gap-4">
             <span>Admin Profile</span>
-            <div className="w-8 h-8 bg-gray-300 rounded-full" />
-            <Link to="/login" className="bg-green-600 text-white font-bold px-4 py-2 rounded-xl border-1.5 border-green-800 cursor-pointer">
+            <FaRegUserCircle className="w-8 h-8 text-gray-600" />
+            <Link
+              to="/login"
+              className="bg-green-600 text-white font-bold px-4 py-2 rounded-xl border border-green-800 cursor-pointer"
+            >
               Logout
             </Link>
           </div>
         </header>
 
-        <button className="bg-black text-white px-4 py-2 rounded-md mb-6">
-          <Link to="/addproduct">
-            Add Product
-          </Link>
-        </button>
-
-        {/* Product Table */}
-        <div className="bg-white rounded-lg shadow">
-          <table className="w-full text-left border-collapse">
-            <thead className="border-b">
-              <tr className="text-gray-700">
-                <th className="p-4">PHOTO</th>
-                <th className="p-4">PRODUCT NAME</th>
-                <th className="p-4">CATEGORY</th>
-                <th className="p-4">PRICE</th>
-                <th className="p-4">STOCK</th>
-                <th className="p-4"></th>
-              </tr>
-            </thead>
-            <tbody>
-              {products.map((product, index) => (
-                <tr key={index} className="border-b hover:bg-gray-50">
-                  <td className="p-4">
-                    <img src={product.photo} alt={product.name} className="w-12 h-12 object-contain" />
-                  </td>
-                  <td className="p-4">{product.name}</td>
-                  <td className="p-4">{product.category}</td>
-                  <td className="p-4">{product.price}</td>
-                  <td className="p-4">{product.stock}</td>
-                  <td className="p-4">
-                    <button className="border rounded-md px-3 py-1">Edit</button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-
-        {/* Pagination */}
-        <div className="flex justify-center items-center gap-2 mt-6">
-          <button className="border px-3 py-1 rounded-md text-gray-400">&lt;</button>
-          {[1, 2, 3, 4, 5].map((num) => (
-            <button
-              key={num}
-              className={`px-3 py-1 rounded-md ${num === 1 ? "bg-black text-white" : "border text-gray-600"
-                }`}
-            >
-              {num}
+        {/* Content */}
+        <div className="flex gap-6">
+          {/* Profile Photo */}
+          <div className="bg-white shadow-md rounded-lg p-6 w-1/3 flex flex-col items-center">
+            <FaRegUserCircle className="w-32 h-32 text-gray-400" />
+            <button className="mt-4 bg-black text-white px-4 py-2 rounded-md">
+              Edit
             </button>
-          ))}
-          <button className="border px-3 py-1 rounded-md text-gray-400">&gt;</button>
+          </div>
+
+          {/* Form */}
+          <div className="bg-white shadow-md rounded-lg p-6 w-2/3">
+            <form className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium">Name</label>
+                <input
+                  type="text"
+                  className="mt-1 block w-full border rounded-md px-3 py-2"
+                  placeholder="Enter your name"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium">Username</label>
+                <input
+                  type="text"
+                  className="mt-1 block w-full border rounded-md px-3 py-2"
+                  placeholder="Enter your username"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium">Email</label>
+                <input
+                  type="email"
+                  className="mt-1 block w-full border rounded-md px-3 py-2"
+                  placeholder="Enter your email"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium">Phone Number</label>
+                <input
+                  type="text"
+                  className="mt-1 block w-full border rounded-md px-3 py-2"
+                  placeholder="Enter your phone number"
+                />
+              </div>
+              <button
+                type="submit"
+                className="mt-4 bg-black text-white px-4 py-2 rounded-md"
+              >
+                Save Change
+              </button>
+            </form>
+          </div>
         </div>
 
-        <footer className="text-center text-gray-600 mt-8">
+        {/* Footer */}
+        <div className="text-center bg-black text-white mt-8">
           ©2025 EcoPick. All Rights Reserved
-        </footer>
+        </div>
       </main>
-    </div >
+    </div>
   );
 }
 
-export { DashboardAdmin };
+export { EditProfile };
