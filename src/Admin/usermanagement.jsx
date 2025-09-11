@@ -1,6 +1,7 @@
 import React from 'react'
 import { FaHome, FaBoxOpen, FaUsers, FaRegUserCircle } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
+import Sidebar from '../Components/Sidebar';
 
 const users = [
     { name: "Raja Wijaya", username: "@rajawjy_", email: "rajawijaya12@gail.com", phone: "08123456789", date: "12/07/2025", total: "1" },
@@ -15,34 +16,17 @@ const users = [
 export default function UserManagement() {
     return (
         <div className="flex min-h-screen bg-gray-100">
-            {/* Sidebar */}
-            <aside className="w-64 bg-[#15803D] p-6 text-white">
-                <h1 className="text-2xl font-bold mb-8">EcoPick</h1>
-                <nav className="space-y-4">
-                    <a href="#" className="flex items-center gap-3 hover:text-green-800">
-                        <FaHome /> Dashboard
-                    </a>
-                    <a href="#" className="flex items-center gap-3 hover:text-green-800">
-                        <FaBoxOpen /> Order Management
-                    </a>
-                    <a href="#" className="flex items-center gap-3 bg-[#355317] p-2 rounded-md">
-                        <FaUsers /> User Management
-                    </a>
-                    <a href="#" className="flex items-center gap-3 hover:text-green-800">
-                        <FaRegUserCircle /> Edit Profile
-                    </a>
-                </nav>
-            </aside>
-
+      <Sidebar />
+     
 
             {/* Main Content */}
             <main className="flex-1 p-8">
                 <header className="flex justify-between items-center mb-6">
-                    <h2 className="text-3xl font-bold">Dashboard</h2>
+                    <h2 className="text-3xl font-bold">User Management</h2>
                     <div className="flex items-center gap-4">
                         <span>Admin Profile</span>
                         <div className="w-8 h-8 bg-gray-300 rounded-full" />
-                        <Link to="/login" className="bg-green-600 text-white font-bold px-4 py-2 rounded-xl border-1 border-green-800">
+                        <Link to="/login" className="bg-green-600 text-white font-bold px-4 py-2 rounded-xl border-1 border-green-800 cursor-pointer">
                             Logout
                         </Link>
                     </div>
@@ -95,7 +79,7 @@ export default function UserManagement() {
                 <footer className="text-center text-gray-600 mt-8">
                     ©2025 EcoPick. All Rights Reserved
                 </footer>
-
+          
             </main>
         </div>
     )

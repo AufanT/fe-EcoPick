@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { FaHome, FaBoxOpen, FaUsers, FaRegUserCircle } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import { HiUser } from "react-icons/hi2";
+import Sidebar from '../Components/Sidebar';
 
 const EditProfile = () => {
     const [formData, setFormData] = useState({
@@ -10,6 +11,21 @@ const EditProfile = () => {
         email: "",
         phoneNumber: ""
     });
+
+    const [photo, setPhoto] = useState(null);
+    const fileInputRef = useRef(null);
+
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const url = URL.createObjectURL(file);
+            setPhoto(url); // simpan preview foto
+        }
+    };
+
+    const handleEditClick = () => {
+        fileInputRef.current.click(); // trigger input file
+    };
 
     useEffect(() => {
         // Ambil data dari localStorage
@@ -43,25 +59,9 @@ const EditProfile = () => {
 
     return (
         <div className="flex min-h-screen bg-gray-100">
-            {/* Sidebar */}
-            <aside className="w-64 bg-[#15803D] p-6 text-white">
-                <h1 className="text-2xl font-bold mb-8">EcoPick</h1>
-                <nav className="space-y-4">
-                    <a href="#" className="flex items-center gap-3 hover:text-green-800">
-                        <FaHome /> Dashboard
-                    </a>
-                    <a href="#" className="flex items-center gap-3 hover:text-green-800">
-                        <FaBoxOpen /> Order Management
-                    </a>
-                    <a href="#" className="flex items-center gap-3 hover:text-green-800">
-                        <FaUsers /> User Management
-                    </a>
-                    <a href="#" className="flex items-center gap-3 bg-[#355317] p-2 rounded-md">
-                        <FaRegUserCircle /> Edit Profile
-                    </a>
-                </nav>
-            </aside>
 
+            <Sidebar />
+            
             {/* Main Content */}
             <main className="flex-1 p-8">
                 <header className="flex justify-between items-center mb-6">
@@ -69,75 +69,97 @@ const EditProfile = () => {
                     <div className="flex items-center gap-4">
                         <span>Admin Profile</span>
                         <div className="w-8 h-8 bg-gray-300 rounded-full" />
-                        <Link to="/login" className="bg-green-600 text-white font-bold px-4 py-2 rounded-xl border-1.5 border-green-800">
+                        <Link to="/login" className="bg-green-600 text-white font-bold px-4 py-2 rounded-xl border-1.5 border-green-800 cursor-pointer">
                             Logout
                         </Link>
                     </div>
                 </header>
                 <div className="flex">
                     <div className="bg-white rounded-2xl shadow-lg p-6 flex flex-col items-center w-50 h-80">
-                        <div className="bg-gray-300 h-28 w-28 mt-13 flex items-center justify-center rounded-full">
-                            <HiUser className="text-7xl text-white" />
+                        <div className="bg-gray-300 h-28 w-28 mt-13 flex items-center justify-center rounded-full overflow-hidden">
+                            {photo ? (
+                                <img src={photo} alt="Profile" className="h-full w-full object-cover" />
+                            ) : (
+                                <HiUser className="text-7xl text-white" />
+                            )}
                         </div>
-                        <button className="bg-black text-white text-center rounded-md w-20 mt-4">
+
+                        {/* Input file hidden */}
+                        <input
+                            type="file"
+                            ref={fileInputRef}
+                            onChange={handleFileChange}
+                            accept="image/*"
+                            className="hidden"
+                        />
+
+                        <button
+                            onClick={handleEditClick}
+                            className="bg-black text-white text-center rounded-md w-20 mt-4 cursor-pointer"
+                        >
                             Edit
                         </button>
                     </div>
-                    <div className="flex ml-6 items-center justify-center max-w-lg w-full">
-                        <div className="bg-white shadow-md rounded-2xl p-8 w-full max-w-lg">
-                            <form onSubmit={handleSubmit} className="margin-20">
+                    <div className="ml-6 flex-1">
+                        <div className="bg-white shadow-md rounded-2xl p-8 w-full">
+                            <form className="space-y-4 h-65">
                                 {/* Name */}
                                 <div>
-                                    <label className="block text-sm font-medium mb-2">Name</label>
+                                    <label className="block text-sm font-medium mb-0.5">Name</label>
                                     <input
                                         type="text"
                                         name="name"
                                         value={formData.name}
                                         onChange={handleChange}
-                                        className="w-full h-12 px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-green-500 focus:outline-none"
+                                        className="flex w-full h-8 px-4 rounded-xl border-2 border-gray-200 focus:border-green-500 focus:outline-none"
                                     />
                                 </div>
 
                                 {/* Username */}
                                 <div>
-                                    <label className="block text-sm font-medium mb-2">Username</label>
+                                    <label className="block text-sm font-medium mb-0.5">Username</label>
                                     <input
                                         type="text"
                                         name="username"
                                         value={formData.username}
                                         onChange={handleChange}
-                                        className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-green-500 focus:outline-none"
+                                        className="w-full h-8 px-4 rounded-xl border-2 border-gray-200 focus:border-green-500 focus:outline-none"
                                     />
                                 </div>
 
                                 {/* Email */}
                                 <div>
-                                    <label className="block text-sm font-medium mb-2">Email</label>
+                                    <label className="block text-sm font-medium mb-0.5">Email</label>
                                     <input
                                         type="email"
                                         name="email"
                                         value={formData.email}
                                         onChange={handleChange}
-                                        className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-green-500 focus:outline-none"
+                                        className="w-full h-8 px-4 rounded-xl border-2 border-gray-200 focus:border-green-500 focus:outline-none"
                                     />
                                 </div>
 
                                 {/* Phone Number */}
                                 <div>
-                                    <label className="block text-sm font-medium mb-2">Phone Number</label>
+                                    <label className="block text-sm font-medium mb-0.5">Phone Number</label>
                                     <input
                                         type="text"
                                         name="phoneNumber"
                                         value={formData.phoneNumber}
                                         onChange={handleChange}
-                                        className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-green-500 focus:outline-none"
+                                        className="w-full h-8 px-4 rounded-xl border-2 border-gray-200 focus:border-green-500 focus:outline-none"
                                     />
-                                 </div>
-                            </form>   
+                                </div>
+                            </form>
                         </div>
-
+                        <div className="pt-4 items-center">
+                            <button
+                                onClick={handleSubmit}
+                                className="bg-black text-white px-4 py-0.5 rounded-lg hover:bg-green-700 cursor-pointer">
+                                Save Changes
+                            </button>
+                        </div>
                     </div>
-
                 </div>
 
                 {/* Footer */}

@@ -1,6 +1,7 @@
-import React from "react";
+import { React, useState } from "react";
 import { FaHome, FaBoxOpen, FaUsers, FaRegUserCircle } from "react-icons/fa";
 import { Link } from 'react-router-dom';
+import Sidebar from "../Components/Sidebar";
 
 export default function AddProduct()
  {
@@ -44,27 +45,8 @@ export default function AddProduct()
   }
   return (
     <div className="flex min-h-screen bg-gray-100">
-      {/* Sidebar */}
-      <aside className="w-64 bg-[#15803D] p-6 text-white">
-        <h1 className="text-2xl font-bold mb-8">EcoPick</h1>
-        <nav className="space-y-4">
-          <a
-            href="#"
-            className="flex items-center gap-3 bg-[#355317] p-2 rounded-md"
-          >
-            <FaHome /> Dashboard
-          </a>
-          <a href="#" className="flex items-center gap-3 hover:text-green-800">
-            <FaBoxOpen /> Order Management
-          </a>
-          <a href="#" className="flex items-center gap-3 hover:text-green-800">
-            <FaUsers /> User Management
-          </a>
-          <a href="#" className="flex items-center gap-3 hover:text-green-800">
-            <FaRegUserCircle /> Edit Profile
-          </a>
-        </nav>
-      </aside>
+
+      <Sidebar />
 
       {/* Main Content */}
       <main className="flex-1 p-8">
@@ -73,7 +55,7 @@ export default function AddProduct()
           <div className="flex items-center gap-4">
             <span>Admin Profile</span>
             <div className="w-8 h-8 bg-gray-300 rounded-full" />
-            <Link to="/login" className="bg-green-600 text-white font-bold px-4 py-2 rounded-xl border-1 border-green-800">
+            <Link to="/login" className="bg-green-600 text-white font-bold px-4 py-2 rounded-xl border-1 cursor-pointer border-green-800">
               Logout
             </Link>
           </div>
@@ -155,6 +137,8 @@ export default function AddProduct()
             </button>
           </div>
         </div>
+
+
       </main>
     </div>
   );
