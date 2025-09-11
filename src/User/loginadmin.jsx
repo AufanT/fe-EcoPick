@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import Footer from "../Components/Footer";
 import { login } from "../services/api.js"; // pakai axios instance dari api.js
 
-const Login = () => {
+const LoginAdmin = () => {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -52,16 +52,21 @@ const handleSubmit = async (e) => {
     const res = await login(formData);
     const data = res.data;
 
+    console.log("🔥 Response dari backend:", data);
+
+    console.log("Login response:", data); // 👈 cek struktur respons
+
     setIsLoading(false);
 
+    // Coba cari token di berbagai kemungkinan key
     const token =
-      data.token ||
+     data.token ||
       data.access_token ||
       data.jwt ||
       data.id_token ||
       data?.data?.token ||
       data?.data?.access_token ||
-      data?.data?.accessToken;
+      data?.data?.accessToken; // ✅ ini kunci token dari backend kamu
 
     if (token) {
       localStorage.setItem("token", token);
@@ -69,16 +74,9 @@ const handleSubmit = async (e) => {
       const user = data.user || data.data?.user || null;
       if (user) {
         localStorage.setItem("user", JSON.stringify(user));
-
-        // ✅ arahkan sesuai role
-        if (user.role_id === "1") {
-          navigate("/dashboard-admin");
-        } else {
-          navigate("/");
-        }
-      } else {
-        navigate("/");
       }
+
+      navigate("/");
     } else {
       setErrors({ general: "Login berhasil tapi token tidak ditemukan di response." });
     }
@@ -87,10 +85,9 @@ const handleSubmit = async (e) => {
     console.error(err.response?.data || err.message);
     setErrors({
       general: err.response?.data?.message || "Login gagal, periksa email/password",
-    }); 
+    });
   }
 };
-
 
 
   return (
@@ -220,4 +217,4 @@ const handleSubmit = async (e) => {
   );
 };
 
-export default Login;
+export default LoginAdmin;
