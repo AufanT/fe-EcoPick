@@ -23,17 +23,17 @@ const products = [
     price: "Rp40.000",
     img: "/public/image 23.png",
   },
-  { 
-    id: 4, 
-    name: "Bamboo Toothbrush", 
-    price: "Rp12.500", 
-    img: "/public/image 10.png" 
+  {
+    id: 4,
+    name: "Bamboo Toothbrush",
+    price: "Rp12.500",
+    img: "/public/image 10.png",
   },
-  { 
-    id: 5, 
-    name: "Stainless Steel Straw", 
-    price: "Rp3.500", 
-    img: "/public/Group 19.png" 
+  {
+    id: 5,
+    name: "Stainless Steel Straw",
+    price: "Rp3.500",
+    img: "/public/Group 19.png",
   },
 ];
 
@@ -69,7 +69,6 @@ const posts = [
 ];
 
 export const Dashboard = () => {
-  const [email, setEmail] = useState("");
   const [toast, setToast] = useState({
     open: false,
     message: "",
@@ -97,24 +96,29 @@ export const Dashboard = () => {
     }
   }, []);
 
-  const handleSubscribe = () => {
-    const isValid = /.+@.+\..+/.test(email);
-    if (!isValid) {
-      setToast({ open: true, message: "Invalid email", variant: "error" });
-    } else {
-      setToast({
-        open: true,
-        message: "Successfully subscribed!",
-        variant: "success",
-      });
-      setEmail("");
-    }
-    clearTimeout(window._db_toast_timer);
-    window._db_toast_timer = setTimeout(
-      () => setToast((t) => ({ ...t, open: false })),
-      2000
-    );
-  };
+  const [favorites, setFavorites] = useState([]);
+
+useEffect(() => {
+  const savedFavorites = localStorage.getItem("ecopick_favorites");
+  if (savedFavorites) {
+    setFavorites(JSON.parse(savedFavorites));
+  }
+}, []);
+
+const toggleFavorite = (product) => {
+  let newFavorites;
+
+  if (favorites.some((fav) => fav.id === product.id)) {
+    // kalau udah ada → hapus
+    newFavorites = favorites.filter((fav) => fav.id !== product.id);
+  } else {
+    // kalau belum ada → tambah
+    newFavorites = [...favorites, product];
+  }
+
+  setFavorites(newFavorites);
+  localStorage.setItem("ecopick_favorites", JSON.stringify(newFavorites));
+};
 
   const addToCart = (product) => {
     const existingItem = cart.find((item) => item.id === product.id);
@@ -224,10 +228,20 @@ export const Dashboard = () => {
             >
               {/* Heart Icon */}
               <button
-                className="absolute top-4 right-4 text-gray-400 hover:text-red-500 transition"
+                onClick={() => toggleFavorite(p)}
+                className={`absolute top-4 right-4 transition ${
+                  favorites.some((fav) => fav.id === p.id)
+                    ? "text-red-500"
+                    : "text-gray-400 hover:text-red-500"
+                }`}
                 aria-label="Add to favorites"
               >
-                <Heart className="w-5 h-5" />
+                <Heart
+                  className="w-5 h-5"
+                  fill={
+                    favorites.some((fav) => fav.id === p.id) ? "red" : "none"
+                  }
+                />
               </button>
 
               {/* Product Image */}
@@ -415,37 +429,6 @@ export const Dashboard = () => {
 
       {/* Divider */}
       <div className="border-t border-gray-200" />
-
-      {/* CTA Section */}
-      <section className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-[url('/cta-bg.jpg')] bg-cover bg-center opacity-20" />
-        <div className="relative max-w-6xl mx-auto px-6 py-16 text-center">
-          <h2 className="text-2xl md:text-3xl font-bold text-gray-900">
-            Start Small Changes Today
-          </h2>
-          <p className="mt-2 text-gray-600">
-            Join our newsletter for promotions & sustainable living tips.
-          </p>
-          <div className="mt-6 flex flex-col sm:flex-row gap-3 justify-center">
-            <input
-              type="email"
-              placeholder="Your email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="px-4 py-3 rounded-xl bg-white shadow w-full sm:w-80 outline-none ring-2 ring-transparent focus:ring-green-300"
-            />
-            <button
-              onClick={handleSubscribe}
-              className="px-6 py-3 rounded-xl bg-green-600 hover:bg-green-700 text-white font-medium"
-            >
-              Subscribe
-            </button>
-          </div>
-          <div aria-live="polite" className="sr-only">
-            {toast.open ? toast.message : ""}
-          </div>
-        </div>
-      </section>
 
       {/* Blog Section */}
       <section className="max-w-6xl mx-auto px-6 py-16" id="faq">

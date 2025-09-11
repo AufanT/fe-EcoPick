@@ -1,7 +1,46 @@
 import React from "react";
 import { FaHome, FaBoxOpen, FaUsers, FaRegUserCircle } from "react-icons/fa";
 
-export default function AddProduct() {
+export default function AddProduct()
+ {
+   const [form, setForm] = useState({
+    name: "",
+    category: "",
+    price: "",
+    stock: "",
+    image: null,
+  });
+
+  // handle perubahan input
+  const handleChange = (e) => {
+    const { name, value, files } = e.target;
+    setForm({
+      ...form,
+      [name]: files ? files[0] : value, // khusus file
+    });
+  };
+
+  // handle submit ke API
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      // kalau ada upload file → pakai FormData
+      const formData = new FormData();
+      formData.append("name", form.name);
+      formData.append("category", form.category);
+      formData.append("price", form.price);
+      formData.append("stock_quantity", form.stock);
+      if (form.image) formData.append("image", form.image);
+
+      const res = await addProduct(formData);
+      alert("Produk berhasil ditambahkan!");
+      console.log(res.data);
+    } catch (err) {
+      console.error(err.response?.data || err.message);
+      alert("Gagal menambahkan produk!");
+    }
+  }
   return (
     <div className="flex min-h-screen bg-gray-100">
       {/* Sidebar */}
@@ -41,7 +80,9 @@ export default function AddProduct() {
 
           <div className="bg-white shadow rounded-lg p-6">
             {/* Form */}
-            <form className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <form 
+            onSubmit={handleSubmit}
+            className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Product Name (full width) */}
               <div className="col-span-1 md:col-span-2">
                 <label className="block text-sm font-medium">
@@ -49,6 +90,7 @@ export default function AddProduct() {
                 </label>
                 <input
                   type="text"
+                  onChange={handleChange}
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm px-3 py-2"
                 />
               </div>
@@ -60,7 +102,7 @@ export default function AddProduct() {
                   type="text"
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm px-3 py-2"
                 />
-              </div>
+              </div>  
 
               {/* Price */}
               <div>
