@@ -1,7 +1,5 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React from "react";
 import { FaHome, FaBoxOpen, FaUsers, FaRegUserCircle } from "react-icons/fa";
-import { addProduct } from "../services/api"; // pastikan path api.js benar
 
 export default function AddProduct() {
   const [form, setForm] = useState({
@@ -63,7 +61,10 @@ export default function AddProduct() {
       <aside className="w-64 bg-[#15803D] p-6 text-white">
         <h1 className="text-2xl font-bold mb-8">EcoPick</h1>
         <nav className="space-y-4">
-          <a href="#" className="flex items-center gap-3 bg-[#355317] p-2 rounded-md">
+          <a
+            href="#"
+            className="flex items-center gap-3 bg-[#355317] p-2 rounded-md"
+          >
             <FaHome /> Dashboard
           </a>
           <a href="#" className="flex items-center gap-3 hover:text-green-800">
@@ -85,10 +86,7 @@ export default function AddProduct() {
           <div className="flex items-center gap-4">
             <span>Admin Profile</span>
             <div className="w-8 h-8 bg-gray-300 rounded-full" />
-            <Link
-              to="/login"
-              className="bg-green-600 text-white font-bold px-4 py-2 rounded-xl border-2 border-green-800"
-            >
+            <Link to="/login" className="bg-green-600 text-white font-bold px-4 py-2 rounded-xl border-2 border-green-800">
               Logout
             </Link>
           </div>
@@ -226,6 +224,8 @@ export default function AddProduct() {
             </form>
           </div>
         </div>
+
+
       </main>
     </div>
   );
