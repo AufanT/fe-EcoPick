@@ -43,55 +43,62 @@ const Login = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  if (!validateForm()) return;
-  setIsLoading(true);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!validateForm()) return;
+    setIsLoading(true);
 
-  try {
-    const res = await login(formData);
-    const data = res.data;
+    try {
+      const res = await login(formData);
+      const data = res.data;
 
-    setIsLoading(false);
+      setIsLoading(false);
 
-    const token =
-      data.token ||
-      data.access_token ||
-      data.jwt ||
-      data.id_token ||
-      data?.data?.token ||
-      data?.data?.access_token ||
-      data?.data?.accessToken;
+        console.log("🔥 Full login response:", data);
 
-    if (token) {
-      localStorage.setItem("token", token);
+      const token =
+        data.token ||
+        data.access_token ||
+        data.jwt ||
+        data.id_token ||
+        data?.data?.token ||
+        data?.data?.access_token ||
+        data?.data?.accessToken;
 
-      const user = data.user || data.data?.user || null;
-      if (user) {
-        localStorage.setItem("user", JSON.stringify(user));
+      if (token) {
+        localStorage.setItem("token", token);
 
-        // ✅ arahkan sesuai role
-        if (user.role === "admin") {
-          navigate("/dashboard-admin");
+        const user = data.user || data.data?.user || null;
+        if (user) {
+          localStorage.setItem("user", JSON.stringify(user));
+
+          // ✅ arahkan sesuai role
+          if (
+            user.role === "admin" ||
+            user.role_id === 1 ||
+            user.is_admin === true
+          ) {
+            navigate("/dashboard-admin");
+          } else {
+            navigate("/");
+          }
         } else {
           navigate("/");
         }
       } else {
-        navigate("/");
+        setErrors({
+          general: "Login berhasil tapi token tidak ditemukan di response.",
+        });
       }
-    } else {
-      setErrors({ general: "Login berhasil tapi token tidak ditemukan di response." });
+    } catch (err) {
+      setIsLoading(false);
+      console.error(err.response?.data || err.message);
+      setErrors({
+        general:
+          err.response?.data?.message || "Login gagal, periksa email/password",
+      });
     }
-  } catch (err) {
-    setIsLoading(false);
-    console.error(err.response?.data || err.message);
-    setErrors({
-      general: err.response?.data?.message || "Login gagal, periksa email/password",
-    }); 
-  }
-};
-
-
+  };
 
   return (
     <div className="min-h-screen bg-green-50">
@@ -130,9 +137,7 @@ const handleSubmit = async (e) => {
               <h1 className="text-3xl font-bold text-gray-900 mb-2">
                 Welcome Back
               </h1>
-              <p className="text-gray-600">
-                Sign in to your EcoPick account
-              </p>
+              <p className="text-gray-600">Sign in to your EcoPick account</p>
             </div>
 
             {errors.general && (
