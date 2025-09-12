@@ -81,7 +81,7 @@ const Favorites = () => {
       </div>
 
       {/* Main Content */}
-      <main className="flex-grow px-6 pt-2">
+      <main className="flex-grow px-6 pt-2 mb-24">
         <h1 className="text-xl font-semibold mb-6">Favorite</h1>
 
         {favorites.length === 0 ? (

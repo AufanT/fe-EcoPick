@@ -54,7 +54,7 @@ const Login = () => {
 
       setIsLoading(false);
 
-        console.log("🔥 Full login response:", data);
+      console.log("🔥 Full login response:", data);
 
       const token =
         data.token ||
@@ -132,7 +132,13 @@ const Login = () => {
           <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md mx-auto">
             <div className="text-center mb-8">
               <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl">🌱</span>
+                <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mb-4 border-gray-200">
+                  <img
+                    src="/public/image 38.png"
+                    alt="EcoPick Logo"
+                    className="w-12 h-12 object-contain"
+                  />
+                </div>
               </div>
               <h1 className="text-3xl font-bold text-gray-900 mb-2">
                 Welcome Back

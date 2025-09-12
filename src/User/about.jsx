@@ -15,7 +15,7 @@ const About = () => {
 
   const members = [
     { name: "Alya Salsa Nabila", role: "UI/UX", image: "/public/fotoalya.jpg" },
-    { name: "Alvina Roslinda", role: "Web Programming", image: "/images/avatar.png" },
+    { name: "Alvina Roslinda", role: "Web Programming", image: "/public/fotovina.png" },
     { name: "Laila Qadriyah", role: "Web Programming", image: "/public/fotolaila.jpg" },
     { name: "Aufan T.", role: "Web Programming", image: "/images/avatar.png" },
     { name: "Izzatul Mahdiyah", role: "Network Engineering", image: "/public/fotoimah.jpg" },

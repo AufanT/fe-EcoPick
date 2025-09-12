@@ -13,7 +13,7 @@ const Footer = () => {
     <div className="md:pl-6">
       <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mb-4">
         <img
-          src="/images/logo-ecopick.png"
+          src="/public/image 38.png"
           alt="EcoPick Logo"
           className="w-12 h-12 object-contain"
         />
