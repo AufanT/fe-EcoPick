@@ -8,7 +8,7 @@ export default function Header() {
             <div className="flex items-center gap-3 text-white">
                 <span className="text-sm">Admin Profile</span>
                 <div className="w-8 h-8 bg-gray-400 rounded-full flex items-center justify-center">
-                    <FaRegUserCircle className="text-black text-lg" />
+                    <FaRegUserCircle className="text-black text-2xl" />
                 </div>
                 <Link
                     to="/login"
