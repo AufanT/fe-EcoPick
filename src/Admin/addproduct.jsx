@@ -1,12 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { FaHome, FaBoxOpen, FaUsers, FaRegUserCircle } from "react-icons/fa";
-import { addProduct } from "../services/api"; // pastikan path api.js benar
+import { addProduct } from "../services/api";
+import axios from "axios";
 
 export default function AddProduct() {
+  const [categories, setCategories] = useState([]); // daftar kategori dari API
   const [form, setForm] = useState({
     name: "",
-    category: "",
+    category_id: "",
     price: "",
     stock: "",
     description: "",
@@ -17,16 +19,44 @@ export default function AddProduct() {
     image_url: "",
   });
 
+  // Ambil kategori dari backend
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const res = await axios.get(
+          "https://19791ae92e50.ngrok-free.app/api/categories"
+        );
+        console.log("📂 Data categories:", res.data);
+
+        // pastikan yang masuk ke state adalah array
+        if (Array.isArray(res.data.data)) {
+          setCategories(res.data.data);
+        } else if (Array.isArray(res.data)) {
+          setCategories(res.data);
+        } else {
+          console.warn("⚠️ Format kategori tidak sesuai, fallback ke mock data");
+          setCategories([
+            { id: 1, name: "Tumbler" },
+            { id: 2, name: "Piring" },
+          ]);
+        }
+      } catch (err) {
+        console.error("❌ Gagal ambil kategori:", err.message);
+        // fallback mock data
+        setCategories([
+          { id: 1, name: "Tumbler" },
+          { id: 2, name: "Piring" },
+        ]);
+      }
+    };
+    fetchCategories();
+  }, []);
+
   const handleChange = (e) => {
     const { name, value, type, checked, files } = e.target;
     setForm({
       ...form,
-      [name]:
-        type === "checkbox"
-          ? checked
-          : files
-          ? files[0]
-          : value,
+      [name]: type === "checkbox" ? checked : files ? files[0] : value,
     });
   };
 
@@ -35,24 +65,26 @@ export default function AddProduct() {
     try {
       const formData = new FormData();
       formData.append("name", form.name);
-      formData.append("category", form.category);
-      formData.append("price", form.price);
-      formData.append("stock_quantity", form.stock);
+      formData.append("category_id", Number(form.category_id));
+      formData.append("price", Number(form.price));
+      formData.append("stock", Number(form.stock));
       formData.append("description", form.description);
       formData.append("materials", form.materials);
       formData.append("origin", form.origin);
-      formData.append("eco_friendly", form.eco_friendly);
+      formData.append("eco_friendly", form.eco_friendly ? "true" : "false");
       formData.append("image_url", form.image_url);
 
       if (form.image) {
         formData.append("image", form.image);
       }
 
+      console.log("📦 Payload:", [...formData.entries()]);
+
       const res = await addProduct(formData);
       alert("✅ Produk berhasil ditambahkan!");
       console.log(res.data);
     } catch (err) {
-      console.error(err.response?.data || err.message);
+      console.error("❌ Error tambah produk:", err.message);
       alert("❌ Gagal menambahkan produk!");
     }
   };
@@ -113,22 +145,30 @@ export default function AddProduct() {
                 />
               </div>
 
-              {/* Category */}
+              {/* Category Dropdown */}
               <div>
                 <label className="block text-sm font-medium">Category</label>
-                <input
-                  type="text"
-                  name="category"
+                <select
+                  name="category_id"
                   onChange={handleChange}
+                  value={form.category_id}
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm px-3 py-2"
-                />
+                >
+                  <option value="">-- Pilih Kategori --</option>
+                  {Array.isArray(categories) &&
+                    categories.map((cat) => (
+                      <option key={cat.id} value={cat.id}>
+                        {cat.name}
+                      </option>
+                    ))}
+                </select>
               </div>
 
               {/* Price */}
               <div>
                 <label className="block text-sm font-medium">Price</label>
                 <input
-                  type="text"
+                  type="number"
                   name="price"
                   onChange={handleChange}
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm px-3 py-2"
