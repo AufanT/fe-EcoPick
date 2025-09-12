@@ -78,7 +78,6 @@ const Favorites = () => {
             Back to Dashboard
           </span>
         </Link>
-
       </div>
 
       {/* Main Content */}
