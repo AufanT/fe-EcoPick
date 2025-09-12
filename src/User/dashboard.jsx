@@ -8,31 +8,31 @@ const products = [
   {
     id: 1,
     name: "Stainless Steel Tumbler",
-    price: "Rp130.000",
+    price: 130000,
     img: "/public/image 24.png",
   },
   {
     id: 2,
     name: "Ceramic Cup",
-    price: "Rp25.000",
+    price: 25000,
     img: "/public/image 4.png",
   },
   {
     id: 3,
     name: "Ceramic Plate",
-    price: "Rp40.000",
+    price: 40000,
     img: "/public/image 23.png",
   },
   {
     id: 4,
     name: "Bamboo Toothbrush",
-    price: "Rp12.500",
+    price: 12500,
     img: "/public/image 10.png",
   },
   {
     id: 5,
     name: "Stainless Steel Straw",
-    price: "Rp3.500",
+    price: 3500,
     img: "/public/Group 19.png",
   },
 ];
@@ -120,44 +120,45 @@ const toggleFavorite = (product) => {
   localStorage.setItem("ecopick_favorites", JSON.stringify(newFavorites));
 };
 
-  const addToCart = (product) => {
-    const existingItem = cart.find((item) => item.id === product.id);
-    let newCart;
+const addToCart = (product) => {
+  const existingItem = cart.find((item) => item.id === product.id);
+  let newCart;
 
-    if (existingItem) {
-      newCart = cart.map((item) =>
-        item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
-      );
-    } else {
-      newCart = [...cart, { ...product, quantity: 1 }];
-    }
-
-    setCart(newCart);
-
-    // Simpan ke localStorage
-    localStorage.setItem("ecopick_cart", JSON.stringify(newCart));
-
-    // Update cart counter di navbar
-    window.dispatchEvent(
-      new CustomEvent("cartUpdated", {
-        detail: {
-          cartCount: newCart.reduce((total, item) => total + item.quantity, 0),
-        },
-      })
+  if (existingItem) {
+    newCart = cart.map((item) =>
+      item.id === product.id ? { ...item, qty: item.qty + 1 } : item
     );
+  } else {
+    newCart = [...cart, { ...product, qty: 1, checked: true }];
+  }
 
-    setToast({
-      open: true,
-      message: `${product.name} ditambahkan ke keranjang!`,
-      variant: "success",
-    });
+  setCart(newCart);
 
-    clearTimeout(window._db_toast_timer);
-    window._db_toast_timer = setTimeout(
-      () => setToast((t) => ({ ...t, open: false })),
-      2000
-    );
-  };
+  // Simpan ke localStorage
+  localStorage.setItem("ecopick_cart", JSON.stringify(newCart));
+
+  // Update cart counter di navbar
+  window.dispatchEvent(
+    new CustomEvent("cartUpdated", {
+      detail: {
+        cartCount: newCart.reduce((total, item) => total + item.qty, 0),
+      },
+    })
+  );
+
+  setToast({
+    open: true,
+    message: `${product.name} ditambahkan ke keranjang!`,
+    variant: "success",
+  });
+
+  clearTimeout(window._db_toast_timer);
+  window._db_toast_timer = setTimeout(
+    () => setToast((t) => ({ ...t, open: false })),
+    2000
+  );
+};
+
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -269,7 +270,7 @@ const toggleFavorite = (product) => {
                 </button>
                 <button
                   onClick={() => addToCart(p)}
-                  className="flex-1 py-1.5 text-sm bg-black text-white rounded-full hover:bg-gray-800 transition"
+                  className="flex-1 py-1.5 text-sm bg-black text-white rounded-full hover:bg-gray-800 transition cursor-pointer"
                 >
                   Add to Cart
                 </button>
