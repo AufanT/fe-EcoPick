@@ -1,4 +1,3 @@
-// src/components/Sidebar.jsx
 import { FaHome, FaBoxOpen, FaUsers, FaRegUserCircle } from "react-icons/fa";
 import { Link, useLocation } from "react-router-dom";
 
