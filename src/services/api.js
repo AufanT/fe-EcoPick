@@ -18,7 +18,8 @@ api.interceptors.request.use((config) => {
 });
 
 // Products
-export const getProducts = () => api.get("/admin/products");
+export const getProducts = (page = 1, limit = 10) =>
+  api.get(`/admin/products?page=${page}&limit=${limit}`);
 
 // Categories
 export const getCategories = () => api.get("/admin/categories");
@@ -42,5 +43,9 @@ export const addProduct = (data, config = {}) => {
 // Auth
 export const login = (data) => api.post("/auth/login", data);
 export const register = (data) => api.post("/auth/register", data);
+
+// Products
+
+
 
 export default api;
