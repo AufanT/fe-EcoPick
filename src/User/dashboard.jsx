@@ -37,36 +37,7 @@ const products = [
   },
 ];
 
-const testimonials = [
-  {
-    id: 1,
-    name: "Alya",
-    text: "Kualitas bagus, pengiriman cepat, dan benar-benar ramah lingkungan!",
-    avatar: "/avatar-1.jpg",
-  },
-  {
-    id: 2,
-    name: "Rama",
-    text: "Sikat bambunya nyaman dipakai. Repeat order deh!",
-    avatar: "/avatar-2.jpg",
-  },
-  {
-    id: 3,
-    name: "Intan",
-    text: "Senang bisa belanja sambil peduli lingkungan 🌱",
-    avatar: "/avatar-3.jpg",
-  },
-];
 
-const posts = [
-  {
-    id: 1,
-    title: "5 Cara Mengurangi Plastik Sekali Pakai",
-    img: "/blog-1.jpg",
-  },
-  { id: 2, title: "Kenapa Bambu Lebih Berkelanjutan?", img: "/blog-2.jpg" },
-  { id: 3, title: "Tips Hidup Minimalis & Eco-Friendly", img: "/blog-3.jpg" },
-];
 
 export const Dashboard = () => {
   const [toast, setToast] = useState({
@@ -380,102 +351,7 @@ const addToCart = (product) => {
         </div>
       </section>
 
-      {/* Impact Section */}
-      <section id="impact" className="bg-green-700">
-        <div className="max-w-6xl mx-auto px-6 py-16 grid sm:grid-cols-3 gap-8 text-center text-white">
-          <div>
-            <div className="text-4xl md:text-5xl font-extrabold">1.2K+</div>
-            <div className="mt-1 opacity-90">Caring Customers</div>
-          </div>
-          <div>
-            <div className="text-4xl md:text-5xl font-extrabold">8.5 Ton</div>
-            <div className="mt-1 opacity-90">Plastic Waste Saved</div>
-          </div>
-          <div>
-            <div className="text-4xl md:text-5xl font-extrabold">1.000+</div>
-            <div className="mt-1 opacity-90">Trees Planted</div>
-          </div>
-        </div>
-      </section>
-
-      {/* Divider */}
-      <div className="border-t border-gray-200" />
-
-      {/* Testimonials */}
-      <section className="max-w-6xl mx-auto px-6 py-16">
-        <h2 className="text-2xl md:text-3xl font-bold text-gray-900 text-center">
-          What They Say
-        </h2>
-        <div className="mt-8 grid md:grid-cols-3 gap-6">
-          {testimonials.map((t) => (
-            <div key={t.id} className="bg-white rounded-2xl shadow-sm p-6">
-              <div className="flex items-center gap-3">
-                <img
-                  src={t.avatar}
-                  alt={t.name}
-                  className="w-12 h-12 rounded-full object-cover bg-gray-200"
-                  loading="lazy"
-                  decoding="async"
-                />
-                <div>
-                  <div className="font-semibold">{t.name}</div>
-                  <div className="text-yellow-500 text-sm">★★★★★</div>
-                </div>
-              </div>
-              <p className="mt-4 text-gray-700">{t.text}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Divider */}
-      <div className="border-t border-gray-200" />
-
-      {/* Blog Section */}
-      <section className="max-w-6xl mx-auto px-6 py-16" id="faq">
-        <div className="flex items-end justify-between mb-8">
-          <div>
-            <h2 className="text-2xl md:text-3xl font-bold text-gray-900">
-              Articles & Tips
-            </h2>
-            <p className="text-gray-600 mt-1">
-              Learn to live more environmentally friendly.
-            </p>
-          </div>
-          <Link to="/blog" className="text-green-700 hover:underline">
-            View All
-          </Link>
-        </div>
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {posts.map((p) => (
-            <article
-              key={p.id}
-              className="bg-white rounded-2xl shadow-sm overflow-hidden hover:shadow-md transition"
-            >
-              <div className="aspect-[16/10] bg-gray-200">
-                <img
-                  src={p.img}
-                  alt={p.title}
-                  className="w-full h-full object-cover"
-                  loading="lazy"
-                  decoding="async"
-                />
-              </div>
-              <div className="p-4">
-                <h3 className="font-semibold text-gray-900 line-clamp-2">
-                  {p.title}
-                </h3>
-                <Link
-                  to={`/blog/${p.id}`}
-                  className="inline-block mt-3 text-green-700 hover:underline"
-                >
-                  Read more
-                </Link>
-              </div>
-            </article>
-          ))}
-        </div>
-      </section>
+    
 
       <Footer />
 
