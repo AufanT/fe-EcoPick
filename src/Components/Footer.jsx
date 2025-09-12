@@ -1,114 +1,76 @@
-import React from 'react'
+import React from "react";
+import { Link } from "react-router-dom";
+import { FaFacebook, FaInstagram, FaLinkedin } from "react-icons/fa";
+import { FaXTwitter } from "react-icons/fa6";
 
 const Footer = () => {
   return (
-    <footer className="mt-12 bg-[#19583B] text-white">
-      <div className="mx-auto max-w-6xl px-6 py-12 grid gap-10 md:grid-cols-3">
-        {/* Logo & Description */}
+    <footer className="bg-green-700 text-white">
+  {/* Bagian Atas */}
+  <div className="max-w-6xl mx-auto px-12 py-12 grid gap-10 md:grid-cols-3 place-items-start">
+    
+    {/* Kolom 1 */}
+    <div className="md:pl-6">
+      <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mb-4">
+        <img
+          src="/images/logo-ecopick.png"
+          alt="EcoPick Logo"
+          className="w-12 h-12 object-contain"
+        />
+      </div>
+      <h2 className="text-xl font-bold mb-2">EcoPick</h2>
+      <p className="text-sm text-white/90 leading-relaxed mb-4 max-w-xs">
+        EcoPick helps you choose eco-friendly products with ease. Together,
+        we can create a more sustainable lifestyle 🌱
+      </p>
+      <div className="flex gap-4">
+        <a href="#" className="text-2xl hover:text-green-300"><FaFacebook /></a>
+        <a href="#" className="text-2xl hover:text-green-300"><FaLinkedin /></a>
+        <a href="#" className="text-2xl hover:text-green-300"><FaInstagram /></a>
+        <a href="#" className="text-2xl hover:text-green-300"><FaXTwitter /></a>
+      </div>
+    </div>
+
+    {/* Kolom 2 */}
+    <div className="md:pl-10">
+      <div className="space-y-4">
         <div>
-          <h1 className="text-xl font-extrabold">
-            <span className="text-rose-500">Eco</span>Pick
-          </h1>
-          <p className="mt-4 text-sm text-white/80 leading-relaxed">
-            EcoPick membantu kamu memilih produk ramah lingkungan dengan mudah. 
-            Bersama kita wujudkan gaya hidup yang lebih berkelanjutan 🌱.
+          <p className="font-semibold">Support Number</p>
+          <p className="text-sm">081234432100</p>
+        </div>
+        <div>
+          <p className="font-semibold">Support Email</p>
+          <p className="text-sm">ecopick@gmail.com</p>
+        </div>
+        <div>
+          <p className="font-semibold">Address</p>
+          <p className="text-sm">
+            Jl. Dr. M. Hatta, Padang, West Sumatera, Indonesia
           </p>
-          {/* Social icons */}
-          <div className="mt-5 flex gap-3">
-            {[
-              { href: "#", src: "https://www.englishyaari.com/img/facebook.svg", alt: "Facebook" },
-              { href: "#", src: "https://www.englishyaari.com/img/linkdin.svg", alt: "LinkedIn" },
-              { href: "#", src: "https://www.englishyaari.com/img/instagram1.svg", alt: "Instagram" },
-              { href: "#", src: "https://www.englishyaari.com/img/twitter.svg", alt: "Twitter" },
-              { href: "https://www.youtube.com/", src: "https://www.englishyaari.com/img/youtube.svg", alt: "YouTube" }
-            ].map((item, i) => (
-              <a
-                key={i}
-                href={item.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition duration-200"
-              >
-                <img src={item.src} alt={item.alt} className="h-5 w-5" />
-              </a>
-            ))}
-          </div>
-        </div>
-
-        {/* Contact Info */}
-        <div className="space-y-6">
-          <div>
-            <p className="text-sm font-medium">Support Number</p>
-            <a href="tel:+911800123444" className="text-base hover:underline">
-              +91 1800123444
-            </a>
-          </div>
-          <div>
-            <p className="text-sm font-medium">Support Email</p>
-            <a href="mailto:help@lorem.com" className="text-base hover:underline">
-              help@lorem.com
-            </a>
-          </div>
-          <div>
-            <p className="text-sm font-medium">Address</p>
-            <p className="text-base">Sub Nerul, Mumbai, India, 123456</p>
-          </div>
-        </div>
-
-        {/* Pages & Download */}
-        <div className="grid gap-6 sm:grid-cols-2">
-          <div>
-            <p className="text-lg font-semibold mb-3">Pages</p>
-            <ul className="space-y-2">
-              {[
-                { text: "Home", href: "/" },
-                { text: "News", href: "/news" },
-                { text: "Contact", href: "/contact" },
-                { text: "Plans & Pricing", href: "/plans" },
-                { text: "Terms & Conditions", href: "/terms" },
-                { text: "Privacy Policy", href: "/privacy" }
-              ].map((link, i) => (
-                <li key={i}>
-                  <a
-                    href={link.href}
-                    className="text-sm text-white/90 hover:text-white transition duration-200"
-                  >
-                    {link.text}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div>
-            <p className="text-lg font-semibold mb-3">Download App</p>
-            <div className="flex flex-col gap-3">
-              <a href="#" target="_blank" rel="noopener noreferrer">
-                <img
-                  src="https://www.englishyaari.com/img/google-store.svg"
-                  alt="Google Play"
-                  className="h-12"
-                />
-              </a>
-              <a href="#" target="_blank" rel="noopener noreferrer">
-                <img
-                  src="https://www.englishyaari.com/img/apple-store.svg"
-                  alt="App Store"
-                  className="h-12"
-                />
-              </a>
-            </div>
-          </div>
         </div>
       </div>
+    </div>
 
-      {/* Bottom Bar */}
-      <div className="border-t border-white/20">
-        <div className="mx-auto max-w-6xl px-6 py-4 flex items-center justify-center">
-          <p className="text-sm text-white/80">© 2025 EcoPick. All Rights Reserved.</p>
-        </div>
-      </div>
-    </footer>
-  )
-}
+    {/* Kolom 3 */}
+    <div className="md:pl-10">
+      <p className="font-semibold mb-3">Navigation</p>
+      <ul className="space-y-2">
+        <li><Link to="/" className="text-sm hover:underline">Home</Link></li>
+        <li><Link to="/products" className="text-sm hover:underline">Product</Link></li>
+        <li><Link to="/cart" className="text-sm hover:underline">Cart</Link></li>
+        <li><Link to="/about" className="text-sm hover:underline">About</Link></li>
+      </ul>
+    </div>
+  </div>
 
-export default Footer
+  {/* Bottom */}
+  <div className="bg-green-800">
+    <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-center">
+      <p className="text-sm">© 2025 EcoPick. All Rights Reserved</p>
+    </div>
+  </div>
+</footer>
+  );
+};
+
+export default Footer;
