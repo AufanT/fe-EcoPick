@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 export default function Header() {
     return (
-       <header className="flex justify-end items-center bg-black p-2 shadow-md">
+        <header className="flex justify-end items-center bg-black p-2 shadow-md">
             {/* Kanan: Profile */}
             <div className="flex items-center gap-3 text-white">
                 <span className="text-sm">Admin Profile</span>
@@ -12,10 +12,12 @@ export default function Header() {
                 </div>
                 <Link
                     to="/login"
-                    className="bg-green-600 text-white font-bold px-4 py-2 rounded-xl border border-green-800 cursor-pointer"
+                    className="bg-green-600 text-white font-bold px-4 py-2 rounded-xl border border-green-800 cursor-pointer 
+             hover:bg-green-700 active:bg-green-800 transition duration-200"
                 >
                     Logout
                 </Link>
+
             </div>
         </header>
     );
