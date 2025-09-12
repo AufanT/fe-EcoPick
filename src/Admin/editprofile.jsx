@@ -33,7 +33,7 @@ const EditProfile = () => {
         if (savedData) {
             const parsed = JSON.parse(savedData);
             setFormData({
-                name: parsed.firstName + " " + parsed.lastName,
+                name: parsed.full_Name || "",
                 username: parsed.username || "",
                 email: parsed.email || "",
                 phoneNumber: parsed.phoneNumber || ""
