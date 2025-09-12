@@ -3,9 +3,12 @@ import { Link } from "react-router-dom";
 import { FaHome, FaBoxOpen, FaUsers, FaRegUserCircle } from "react-icons/fa";
 import { addProduct } from "../services/api";
 import axios from "axios";
+import FooterAdmin from "../Components/FooterAdmin";
+import Sidebar from "../Components/Sidebar";
+import Header from "../Components/Header";
 
 export default function AddProduct() {
-  const [categories, setCategories] = useState([]); // daftar kategori dari API
+  const [categories, setCategories] = useState([]);
   const [form, setForm] = useState({
     name: "",
     category_id: "",
@@ -19,22 +22,15 @@ export default function AddProduct() {
     image_url: "",
   });
 
-  // Ambil kategori dari backend
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const res = await axios.get(
-          "https://19791ae92e50.ngrok-free.app/api/categories"
-        );
-        console.log("📂 Data categories:", res.data);
-
-        // pastikan yang masuk ke state adalah array
+        const res = await axios.get("https://19791ae92e50.ngrok-free.app/api/categories");
         if (Array.isArray(res.data.data)) {
           setCategories(res.data.data);
         } else if (Array.isArray(res.data)) {
           setCategories(res.data);
         } else {
-          console.warn("⚠️ Format kategori tidak sesuai, fallback ke mock data");
           setCategories([
             { id: 1, name: "Tumbler" },
             { id: 2, name: "Piring" },
@@ -42,7 +38,6 @@ export default function AddProduct() {
         }
       } catch (err) {
         console.error("❌ Gagal ambil kategori:", err.message);
-        // fallback mock data
         setCategories([
           { id: 1, name: "Tumbler" },
           { id: 2, name: "Piring" },
@@ -56,12 +51,7 @@ export default function AddProduct() {
     const { name, value, type, checked, files } = e.target;
     setForm({
       ...form,
-      [name]:
-        type === "checkbox"
-          ? checked
-          : files
-          ? files[0]
-          : value,
+      [name]: type === "checkbox" ? checked : files ? files[0] : value,
     });
   };
 
@@ -83,8 +73,6 @@ export default function AddProduct() {
         formData.append("image", form.image);
       }
 
-      console.log("📦 Payload:", [...formData.entries()]);
-
       const res = await addProduct(formData);
       alert("✅ Produk berhasil ditambahkan!");
       console.log(res.data);
@@ -97,43 +85,20 @@ export default function AddProduct() {
   return (
     <div className="flex min-h-screen bg-gray-100">
       {/* Sidebar */}
-      <aside className="w-64 bg-[#15803D] p-6 text-white">
-        <h1 className="text-2xl font-bold mb-8">EcoPick</h1>
-        <nav className="space-y-4">
-          <a href="#" className="flex items-center gap-3 bg-[#355317] p-2 rounded-md">
-            <FaHome /> Dashboard
-          </a>
-          <a href="#" className="flex items-center gap-3 hover:text-green-800">
-            <FaBoxOpen /> Order Management
-          </a>
-          <a href="#" className="flex items-center gap-3 hover:text-green-800">
-            <FaUsers /> User Management
-          </a>
-          <a href="#" className="flex items-center gap-3 hover:text-green-800">
-            <FaRegUserCircle /> Edit Profile
-          </a>
-        </nav>
-      </aside>
+      <Sidebar />
 
-      {/* Main Content */}
-      <main className="flex-1 p-8">
-        <header className="flex justify-between items-center mb-6">
-          <h2 className="text-3xl font-bold">Dashboard</h2>
-          <div className="flex items-center gap-4">
-            <span>Admin Profile</span>
-            <div className="w-8 h-8 bg-gray-300 rounded-full" />
-            <Link
-              to="/login"
-              className="bg-green-600 text-white font-bold px-4 py-2 rounded-xl border-2 border-green-800"
-            >
-              Logout
-            </Link>
-          </div>
-        </header>
+      {/* Konten kanan */}
+      <div className="flex flex-col flex-1">
+        {/* Header */}
+        <Header />
 
-        <div className="p-6">
+        <div className="bg-white border-t-4 border-black shadow-md p-3">
+          <h1 className="text-2xl font-bold">Add Product</h1>
+        </div>
+
+        {/* Main Content */}
+        <main className="p-6 flex-1">
           <h1 className="text-2xl font-bold mb-4">Add New Product</h1>
-
           <div className="bg-white shadow rounded-lg p-6">
             <form
               onSubmit={handleSubmit}
@@ -150,7 +115,7 @@ export default function AddProduct() {
                 />
               </div>
 
-              {/* Category Dropdown */}
+              {/* Category */}
               <div>
                 <label className="block text-sm font-medium">Category</label>
                 <select
@@ -160,12 +125,11 @@ export default function AddProduct() {
                   className="mt-1 block w-full rounded-md border-gray-300 shadow-sm px-3 py-2"
                 >
                   <option value="">-- Pilih Kategori --</option>
-                  {Array.isArray(categories) &&
-                    categories.map((cat) => (
-                      <option key={cat.id} value={cat.id}>
-                        {cat.name}
-                      </option>
-                    ))}
+                  {categories.map((cat) => (
+                    <option key={cat.id} value={cat.id}>
+                      {cat.name}
+                    </option>
+                  ))}
                 </select>
               </div>
 
@@ -248,7 +212,7 @@ export default function AddProduct() {
                 />
               </div>
 
-              {/* Eco-Friendly Checkbox */}
+              {/* Eco-Friendly */}
               <div className="col-span-1 md:col-span-2 flex items-center">
                 <input
                   type="checkbox"
@@ -270,9 +234,11 @@ export default function AddProduct() {
               </div>
             </form>
           </div>
-        </div>
+        </main>
 
-      </main>
+        {/* Footer */}
+        <FooterAdmin />
+      </div>
     </div>
   );
 }
