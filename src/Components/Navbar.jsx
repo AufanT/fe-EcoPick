@@ -8,20 +8,21 @@ const Navbar = () => {
   const [lastScrollY, setLastScrollY] = useState(0);
   const [cartCount, setCartCount] = useState(0);
   const [favoritesCount, setFavoritesCount] = useState(0);
+  const [searchQuery, setSearchQuery] = useState(""); // 🔍 state search
 
   useEffect(() => {
     AOS.init({ duration: 1000, once: true });
 
     const controlNavbar = () => {
       if (window.scrollY > lastScrollY) {
-        setHideNav(true); // scroll ke bawah → sembunyikan navbar
+        setHideNav(true);
       } else {
-        setHideNav(false); // scroll ke atas → tampilkan navbar
+        setHideNav(false);
       }
       setLastScrollY(window.scrollY);
     };
 
-    // Load initial cart count from localStorage
+    // Load cart & favorites
     const savedCart = localStorage.getItem('ecopick_cart');
     if (savedCart) {
       const parsedCart = JSON.parse(savedCart);
@@ -29,33 +30,31 @@ const Navbar = () => {
       setCartCount(count);
     }
 
-    // Load initial favorites count from localStorage
     const savedFavorites = localStorage.getItem('ecopick_favorites');
     if (savedFavorites) {
       const favoriteIds = JSON.parse(savedFavorites);
       setFavoritesCount(favoriteIds.length);
     }
 
-    // Listen for cart updates
-    const handleCartUpdate = (event) => {
-      setCartCount(event.detail.cartCount);
-    };
-
-    // Listen for favorites updates
-    const handleFavoritesUpdate = (event) => {
-      setFavoritesCount(event.detail.favoritesCount);
-    };
+    // Event listener untuk cart & favorites
+    const handleCartUpdate = (event) => setCartCount(event.detail.cartCount);
+    const handleFavoritesUpdate = (event) => setFavoritesCount(event.detail.favoritesCount);
 
     window.addEventListener('scroll', controlNavbar);
     window.addEventListener('cartUpdated', handleCartUpdate);
     window.addEventListener('favoritesUpdated', handleFavoritesUpdate);
-    
+
     return () => {
       window.removeEventListener('scroll', controlNavbar);
       window.removeEventListener('cartUpdated', handleCartUpdate);
       window.removeEventListener('favoritesUpdated', handleFavoritesUpdate);
     };
   }, [lastScrollY]);
+
+  // 🔍 Dispatch event global kalau search berubah
+  useEffect(() => {
+    window.dispatchEvent(new CustomEvent("searchUpdated", { detail: { searchQuery } }));
+  }, [searchQuery]);
 
   return (
     <nav
@@ -64,27 +63,23 @@ const Navbar = () => {
                  ${hideNav ? '-translate-y-full' : 'translate-y-0'}`}
       data-aos="fade-down"
     >
-      {/* Kiri: Menu
-      <div className="flex space-x-8">
-        <a href="#" className="hover:text-green-400 transition-colors font-medium">Shop</a>
-        <a href="#" className="hover:text-green-400 transition-colors font-medium">About</a>
-        <a href="#" className="hover:text-green-400 transition-colors font-medium">Impact</a>
-        <a href="#" className="hover:text-green-400 transition-colors font-medium">FAQ</a>
-      </div> */}
-
-      {/* Tengah: Logo */}
+      {/* Logo */}
       <a href="#" className="flex items-center space-x-2">
         <img src="/logoep.png" alt="EcoPick Logo" className="h-8" />
         <span className="text-2xl font-bold tracking-wider">EcoPick</span>
       </a>
 
-      {/* Search Bar */}
+      {/* 🔍 Search Bar */}
       <div className="flex-1 max-w-md mx-8">
         <div className="relative">
           <input
             type="text"
             placeholder="Cari produk..."
-            className="w-full px-4 py-2 pl-10 pr-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full px-4 py-2 pl-10 pr-4 bg-white/10 backdrop-blur-sm border border-white/20 
+                       rounded-full text-white placeholder-white/70 
+                       focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent"
           />
           <svg 
             xmlns="http://www.w3.org/2000/svg" 
@@ -98,7 +93,8 @@ const Navbar = () => {
           </svg>
         </div>
       </div>
-      {/* Kanan: Tombol Auth & Ikon */}
+
+      {/* Kanan: Auth & Icon */}
       <div className="flex items-center space-x-4">
         <Link to="/login" className="px-4 py-2 border border-white rounded-full hover:bg-white hover:text-green-700 transition-colors">
           Sign In
@@ -108,7 +104,7 @@ const Navbar = () => {
           Sign Up
         </Link>
 
-        {/* Ikon Favorit */}
+        {/* Favorites */}
         <button className="relative ml-2">
           <Link to="/favorites">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
@@ -120,8 +116,7 @@ const Navbar = () => {
           </Link>
         </button>
 
-
-        {/* Ikon Keranjang */}
+        {/* Cart */}
         <button className="relative ml-2">
           <Link to="/cart">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
