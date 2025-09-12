@@ -4,6 +4,10 @@ import Navbar from "../Components/Navbar";
 import Footer from "../Components/Footer";
 import { Heart } from "lucide-react";
 
+// ✅ Tambahin AOS
+import AOS from "aos";
+import "aos/dist/aos.css";
+
 const products = [
   {
     id: 1,
@@ -37,8 +41,6 @@ const products = [
   },
 ];
 
-
-
 export const Dashboard = () => {
   const [toast, setToast] = useState({
     open: false,
@@ -46,96 +48,89 @@ export const Dashboard = () => {
     variant: "success",
   });
   const [cart, setCart] = useState([]);
+  const [favorites, setFavorites] = useState([]);
 
-  // Load cart from localStorage on component mount
+  // ✅ Init AOS sekali aja
+  useEffect(() => {
+    AOS.init({ duration: 800, once: true });
+  }, []);
+
+  // Load cart from localStorage
   useEffect(() => {
     const savedCart = localStorage.getItem("ecopick_cart");
     if (savedCart) {
       const parsedCart = JSON.parse(savedCart);
       setCart(parsedCart);
 
-      // Update cart counter in navbar
       const cartCount = parsedCart.reduce(
         (total, item) => total + item.quantity,
         0
       );
       window.dispatchEvent(
-        new CustomEvent("cartUpdated", {
-          detail: { cartCount },
-        })
+        new CustomEvent("cartUpdated", { detail: { cartCount } })
       );
     }
   }, []);
 
-  const [favorites, setFavorites] = useState([]);
+  useEffect(() => {
+    const savedFavorites = localStorage.getItem("ecopick_favorites");
+    if (savedFavorites) {
+      setFavorites(JSON.parse(savedFavorites));
+    }
+  }, []);
 
-useEffect(() => {
-  const savedFavorites = localStorage.getItem("ecopick_favorites");
-  if (savedFavorites) {
-    setFavorites(JSON.parse(savedFavorites));
-  }
-}, []);
+  const toggleFavorite = (product) => {
+    let newFavorites;
+    if (favorites.some((fav) => fav.id === product.id)) {
+      newFavorites = favorites.filter((fav) => fav.id !== product.id);
+    } else {
+      newFavorites = [...favorites, product];
+    }
+    setFavorites(newFavorites);
+    localStorage.setItem("ecopick_favorites", JSON.stringify(newFavorites));
+  };
 
-const toggleFavorite = (product) => {
-  let newFavorites;
+  const addToCart = (product) => {
+    const existingItem = cart.find((item) => item.id === product.id);
+    let newCart;
 
-  if (favorites.some((fav) => fav.id === product.id)) {
-    // kalau udah ada → hapus
-    newFavorites = favorites.filter((fav) => fav.id !== product.id);
-  } else {
-    // kalau belum ada → tambah
-    newFavorites = [...favorites, product];
-  }
+    if (existingItem) {
+      newCart = cart.map((item) =>
+        item.id === product.id ? { ...item, qty: item.qty + 1 } : item
+      );
+    } else {
+      newCart = [...cart, { ...product, qty: 1, checked: true }];
+    }
 
-  setFavorites(newFavorites);
-  localStorage.setItem("ecopick_favorites", JSON.stringify(newFavorites));
-};
+    setCart(newCart);
+    localStorage.setItem("ecopick_cart", JSON.stringify(newCart));
 
-const addToCart = (product) => {
-  const existingItem = cart.find((item) => item.id === product.id);
-  let newCart;
-
-  if (existingItem) {
-    newCart = cart.map((item) =>
-      item.id === product.id ? { ...item, qty: item.qty + 1 } : item
+    window.dispatchEvent(
+      new CustomEvent("cartUpdated", {
+        detail: {
+          cartCount: newCart.reduce((total, item) => total + item.qty, 0),
+        },
+      })
     );
-  } else {
-    newCart = [...cart, { ...product, qty: 1, checked: true }];
-  }
 
-  setCart(newCart);
+    setToast({
+      open: true,
+      message: `${product.name} ditambahkan ke keranjang!`,
+      variant: "success",
+    });
 
-  // Simpan ke localStorage
-  localStorage.setItem("ecopick_cart", JSON.stringify(newCart));
-
-  // Update cart counter di navbar
-  window.dispatchEvent(
-    new CustomEvent("cartUpdated", {
-      detail: {
-        cartCount: newCart.reduce((total, item) => total + item.qty, 0),
-      },
-    })
-  );
-
-  setToast({
-    open: true,
-    message: `${product.name} ditambahkan ke keranjang!`,
-    variant: "success",
-  });
-
-  clearTimeout(window._db_toast_timer);
-  window._db_toast_timer = setTimeout(
-    () => setToast((t) => ({ ...t, open: false })),
-    2000
-  );
-};
-
+    clearTimeout(window._db_toast_timer);
+    window._db_toast_timer = setTimeout(
+      () => setToast((t) => ({ ...t, open: false })),
+      2000
+    );
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
 
-      {/* Hero Video Section */}
+      {/* Hero Section */}
       <section className="relative w-full h-screen" id="home">
         <video
           className="absolute top-0 left-0 w-full h-full object-cover z-0"
@@ -149,7 +144,7 @@ const addToCart = (product) => {
         />
         <div className="absolute inset-0 bg-black/40" />
         <div className="relative z-10 h-full flex items-center justify-center px-6 text-center">
-          <div>
+          <div data-aos="fade-up">
             <h1 className="text-white text-4xl md:text-6xl font-extrabold drop-shadow">
               Our Products
             </h1>
@@ -168,19 +163,19 @@ const addToCart = (product) => {
                 href="#about"
                 className="px-6 py-3 rounded-full border border-white/70 text-white hover:bg-white hover:text-green-700 transition"
               >
-                Learn Our Mission
+                What is EcoPick?
               </a>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Spacer */}
-      <div className="pt-4" />
-
       {/* Shop Section */}
       <section id="shop" className="max-w-7xl mx-auto px-6 py-14">
-        <div className="flex items-center justify-between mb-8">
+        <div
+          className="flex items-center justify-between mb-8"
+          data-aos="fade-up"
+        >
           <h2 className="text-2xl md:text-3xl font-bold text-gray-900">
             Recommendation
           </h2>
@@ -193,12 +188,14 @@ const addToCart = (product) => {
         </div>
 
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-5">
-          {products.map((p) => (
+          {products.map((p, idx) => (
             <div
               key={p.id}
-              className="relative flex flex-col bg-white rounded-2xl border border-gray-200 p-5 hover:shadow-md transition"
+              className="relative flex flex-col bg-white rounded-2xl border border-gray-200 p-5 
+             hover:shadow-xl hover:scale-105 transition-transform duration-300 ease-in-out"
+              data-aos="zoom-in"
+              data-aos-delay={idx * 100}
             >
-              {/* Heart Icon */}
               <button
                 onClick={() => toggleFavorite(p)}
                 className={`absolute top-4 right-4 transition ${
@@ -206,7 +203,6 @@ const addToCart = (product) => {
                     ? "text-red-500"
                     : "text-gray-400 hover:text-red-500"
                 }`}
-                aria-label="Add to favorites"
               >
                 <Heart
                   className="w-5 h-5"
@@ -216,7 +212,6 @@ const addToCart = (product) => {
                 />
               </button>
 
-              {/* Product Image */}
               <div className="flex justify-center mb-4">
                 <img
                   src={p.img}
@@ -227,21 +222,19 @@ const addToCart = (product) => {
                 />
               </div>
 
-              {/* Product Info */}
               <h3 className="text-sm font-semibold text-gray-900">{p.name}</h3>
               <p className="text-xs text-gray-500 mb-5">Description</p>
               <h3 className="text-l font-semibold mb-2 text-gray-900">
-                {p.price}
+                Rp {p.price.toLocaleString("id-ID")}
               </h3>
 
-              {/* Buttons */}
               <div className="flex justify-between gap-2 mt-auto">
                 <button className="flex-1 py-1.5 text-sm border border-black rounded-full hover:bg-gray-100 transition">
                   <Link to={`/product/${p.id}`}>Quick View</Link>
                 </button>
                 <button
                   onClick={() => addToCart(p)}
-                  className="flex-1 py-1.5 text-sm bg-black text-white rounded-full hover:bg-gray-800 transition cursor-pointer"
+                  className="flex-1 py-1.5 text-sm bg-black text-white rounded-full hover:bg-gray-800 transition"
                 >
                   Add to Cart
                 </button>
@@ -251,8 +244,8 @@ const addToCart = (product) => {
         </div>
       </section>
 
-      {/* Best Seller Section */}
-      <section id="shop" className="max-w-7xl mx-auto px-6 ">
+      {/* Best Seller */}
+      <section id="shop" className="max-w-7xl mx-auto px-6" data-aos="fade-up">
         <div className="flex items-center justify-between mb-8">
           <h2 className="text-2xl md:text-3xl font-bold text-gray-900">
             Best Seller
@@ -266,20 +259,18 @@ const addToCart = (product) => {
         </div>
 
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-5">
-          {products.map((p) => (
+          {products.map((p, idx) => (
             <div
               key={p.id}
-              className="relative flex flex-col bg-white rounded-2xl border border-gray-200 p-5 hover:shadow-md transition"
+              className="relative flex flex-col bg-white rounded-2xl border border-gray-200 p-5 
+             hover:shadow-xl hover:scale-105 transition-transform duration-300 ease-in-out"
+              data-aos="zoom-in"
+              data-aos-delay={idx * 100}
             >
-              {/* Heart Icon */}
-              <button
-                className="absolute top-4 right-4 text-gray-400 hover:text-red-500 transition"
-                aria-label="Add to favorites"
-              >
+              <button className="absolute top-4 right-4 text-gray-400 hover:text-red-500 transition">
                 <Heart className="w-5 h-5" />
               </button>
 
-              {/* Product Image */}
               <div className="flex justify-center mb-4">
                 <img
                   src={p.img}
@@ -290,11 +281,12 @@ const addToCart = (product) => {
                 />
               </div>
 
-              {/* Product Info */}
               <h3 className="text-sm font-semibold text-gray-900">{p.name}</h3>
               <p className="text-xs text-gray-500 mb-5">Description</p>
+                 <h3 className="text-l font-semibold mb-2 text-gray-900">
+                Rp {p.price.toLocaleString("id-ID")}
+              </h3>
 
-              {/* Buttons */}
               <div className="flex justify-between gap-2 mt-auto">
                 <button className="flex-1 py-1.5 text-sm border border-black rounded-full hover:bg-gray-100 transition">
                   <Link to={`/product/${p.id}`}>View</Link>
@@ -311,11 +303,8 @@ const addToCart = (product) => {
         </div>
       </section>
 
-      {/* Divider */}
-      <div className="border-t border-gray-200" />
-
-      {/* About Section */}
-      <section id="about" className="bg-white">
+      {/* About */}
+      <section id="about" className="bg-white" data-aos="fade-up">
         <div className="max-w-6xl mx-auto px-6 py-16 grid md:grid-cols-2 gap-10 items-center">
           <div>
             <h2 className="text-2xl md:text-3xl font-bold text-gray-900">
@@ -332,14 +321,11 @@ const addToCart = (product) => {
               <li>• Local & ethical suppliers</li>
               <li>• Every transaction contributes to tree planting</li>
             </ul>
-            <a
-              href="#impact"
-              className="inline-block mt-6 px-5 py-3 rounded-full bg-green-600 hover:bg-green-700 text-white font-medium"
-            >
-              See Our Impact
-            </a>
           </div>
-          <div className="rounded-2xl overflow-hidden shadow">
+          <div
+            className="rounded-2xl overflow-hidden shadow"
+            data-aos="zoom-in"
+          >
             <img
               src="/about.jpg"
               alt="Eco mission"
@@ -350,8 +336,6 @@ const addToCart = (product) => {
           </div>
         </div>
       </section>
-
-    
 
       <Footer />
 
