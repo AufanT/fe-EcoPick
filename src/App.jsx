@@ -19,6 +19,7 @@ import UserManagement from "./Admin/usermanagement";
 import OrderManagement from "./Admin/ordermanagement";
 import EditProfile from "./Admin/editprofile";
 import OrderDetailsPage from "./User/orderdetails";
+import LoginAdmin from "./User/loginadmin";
 
 const App = () => {
   useEffect(() => {
@@ -45,6 +46,7 @@ const App = () => {
         <Route path="/ordermanagement" element={<OrderManagement />} />
         <Route path="/editprofile" element={<EditProfile />} />
         <Route path="/orderdetails" element={<OrderDetailsPage />} />
+        <Route path="/loginadmin" element={<LoginAdmin />} />
 
 
       </Routes>

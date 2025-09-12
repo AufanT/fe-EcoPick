@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import Footer from "../Components/Footer";
 import { login } from "../services/api.js"; // pakai axios instance dari api.js
 
-const Login = () => {
+const LoginAdmin = () => {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -43,62 +43,52 @@ const Login = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!validateForm()) return;
-    setIsLoading(true);
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  if (!validateForm()) return;
+  setIsLoading(true);
 
-    try {
-      const res = await login(formData);
-      const data = res.data;
+  try {
+    const res = await login(formData);
+    const data = res.data;
 
-      setIsLoading(false);
+    console.log("🔥 Response dari backend:", data);
 
-        console.log("🔥 Full login response:", data);
+    console.log("Login response:", data); // 👈 cek struktur respons
 
-      const token =
-        data.token ||
-        data.access_token ||
-        data.jwt ||
-        data.id_token ||
-        data?.data?.token ||
-        data?.data?.access_token ||
-        data?.data?.accessToken;
+    setIsLoading(false);
 
-      if (token) {
-        localStorage.setItem("token", token);
+    // Coba cari token di berbagai kemungkinan key
+    const token =
+     data.token ||
+      data.access_token ||
+      data.jwt ||
+      data.id_token ||
+      data?.data?.token ||
+      data?.data?.access_token ||
+      data?.data?.accessToken; // ✅ ini kunci token dari backend kamu
 
-        const user = data.user || data.data?.user || null;
-        if (user) {
-          localStorage.setItem("user", JSON.stringify(user));
+    if (token) {
+      localStorage.setItem("token", token);
 
-          // ✅ arahkan sesuai role
-          if (
-            user.role === "admin" ||
-            user.role_id === 1 ||
-            user.is_admin === true
-          ) {
-            navigate("/dashboard-admin");
-          } else {
-            navigate("/");
-          }
-        } else {
-          navigate("/");
-        }
-      } else {
-        setErrors({
-          general: "Login berhasil tapi token tidak ditemukan di response.",
-        });
+      const user = data.user || data.data?.user || null;
+      if (user) {
+        localStorage.setItem("user", JSON.stringify(user));
       }
-    } catch (err) {
-      setIsLoading(false);
-      console.error(err.response?.data || err.message);
-      setErrors({
-        general:
-          err.response?.data?.message || "Login gagal, periksa email/password",
-      });
+
+      navigate("/");
+    } else {
+      setErrors({ general: "Login berhasil tapi token tidak ditemukan di response." });
     }
-  };
+  } catch (err) {
+    setIsLoading(false);
+    console.error(err.response?.data || err.message);
+    setErrors({
+      general: err.response?.data?.message || "Login gagal, periksa email/password",
+    });
+  }
+};
+
 
   return (
     <div className="min-h-screen bg-green-50">
@@ -137,7 +127,9 @@ const Login = () => {
               <h1 className="text-3xl font-bold text-gray-900 mb-2">
                 Welcome Back
               </h1>
-              <p className="text-gray-600">Sign in to your EcoPick account</p>
+              <p className="text-gray-600">
+                Sign in to your EcoPick account
+              </p>
             </div>
 
             {errors.general && (
@@ -225,4 +217,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default LoginAdmin;
