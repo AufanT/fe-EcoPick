@@ -97,8 +97,8 @@ export default function AddProduct() {
       formData.append("image_url", form.image_url || "");
       // materials - backend mengharapkan JSON → kirim sebagai string JSON
       // kalau input sederhana, kita bungkus jadi array berisi string
-      const materialsPayload = form.materials ? [form.materials] : [];
-      formData.append("materials", JSON.stringify(materialsPayload));
+    //   const materialsPayload = form.materials ? [form.materials] : [];
+      formData.append("materials", form.materials || "");
       formData.append("origin", form.origin || "");
 
       // boolean flags
@@ -216,12 +216,12 @@ export default function AddProduct() {
                   onChange={handleChange}
                   className="mt-1 w-full rounded-md border-gray-300 shadow-sm px-3 py-2"
                 >
-                  <option value="BEAUTY">Beauty</option>
-                  <option value="FOOD_BEVERAGE">Food & Beverage</option>
-                  <option value="OFFICE_SUPPLIES">Office Supplies</option>
-                  <option value="ELECTRONICS">Electronics</option>
-                  <option value="FASHION">Fashion</option>
-                  <option value="HOUSEHOLD">Household</option>
+                  <option value="Beauty">Beauty</option>
+                  <option value="Food & Beverage">Food & Beverage</option>
+                  <option value="Office Supplies">Office Supplies</option>
+                  <option value="Electronics">Electronics</option>
+                  <option value="Fashion">Fashion</option>
+                  <option value="Household">Household</option>
                   {/* TODO: kalau ada endpoint backend untuk ML categories, ambil pakai API */}
                 </select>
               </div>
