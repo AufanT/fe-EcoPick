@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 import { Trash2 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function CartPage() {
   const [items, setItems] = useState([]);
+  const navigate = useNavigate();
 
   // Ambil data cart dari localStorage saat halaman cart dibuka
   useEffect(() => {
@@ -46,6 +47,16 @@ export default function CartPage() {
 
   const shipping = subtotal > 0 ? 30000 : 0;
   const total = subtotal + shipping;
+
+  // >>> fungsi checkout <<<
+  const handleCheckout = () => {
+    const selectedItems = items.filter((item) => item.checked);
+    if (selectedItems.length === 0) {
+      alert("Pilih minimal 1 item untuk checkout!");
+      return;
+    }
+    navigate("/checkout", { state: { items: selectedItems } });
+  };
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen ">
@@ -143,7 +154,10 @@ export default function CartPage() {
             <span>Total</span>
             <span>Rp {total.toLocaleString("id-ID")}</span>
           </div>
-          <button className="w-full bg-green-600 text-white py-2 rounded-xl hover:bg-green-700 transition">
+          <button
+            onClick={handleCheckout}
+            className="w-full bg-green-600 text-white py-2 rounded-xl hover:bg-green-700 transition"
+          >
             Checkout
           </button>
         </div>
