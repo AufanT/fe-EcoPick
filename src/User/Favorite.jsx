@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Heart } from "lucide-react";
+import { IoMdHeart } from "react-icons/io"; // pakai heart solid
 import Footer from "../Components/Footer";
+import { Link } from "react-router-dom";
 
 const Favorites = () => {
   const [favorites, setFavorites] = useState([]);
@@ -53,8 +54,35 @@ const Favorites = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <main className="flex-grow p-6">
+    <div className="flex flex-col min-h-screen bg-gray-100">
+      {/* Button Back to Dashboard */}
+      <div className="px-6 pt-6 pb-2">
+        <Link
+          to="/"
+          className="inline-flex items-center gap-2 px-3 py-2 bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-md hover:border-green-300 transition-all duration-300 group w-fit"
+        >
+          <svg
+            className="w-4 h-4 text-gray-600 group-hover:text-green-600 transition-colors"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M15 19l-7-7 7-7"
+            />
+          </svg>
+          <span className="text-gray-700 group-hover:text-green-600 font-medium transition-colors">
+            Back to Dashboard
+          </span>
+        </Link>
+
+      </div>
+
+      {/* Main Content */}
+      <main className="flex-grow px-6 pt-2">
         <h1 className="text-xl font-semibold mb-6">Favorite</h1>
 
         {favorites.length === 0 ? (
@@ -66,42 +94,46 @@ const Favorites = () => {
             {favorites.map((product) => (
               <div
                 key={product.id}
-                className="border rounded-lg shadow p-4 flex flex-col items-center relative"
+                className="bg-white border border-gray-200 rounded-xl shadow-sm p-4 flex flex-col hover:shadow-md transition"
               >
+                {/* Gambar produk */}
                 <img
                   src={product.img}
                   alt={product.name}
-                  className="w-32 h-32 object-contain mb-4"
+                  className="w-full h-40 object-contain mb-4"
                 />
-                <h2 className="text-base font-semibold text-center">
-                  {product.name}
-                </h2>
-                <p className="text-gray-600 text-sm mb-2">Description</p>
-                <p className="font-medium mb-3">{product.price}</p>
 
-                {/* Favorite toggle */}
-                <button
-                  onClick={() => toggleFavorite(product)}
-                  className="absolute top-3 right-3 text-gray-700 hover:text-red-500"
-                >
-                  <Heart
-                    size={20}
-                    fill={
-                      favorites.some((fav) => fav.id === product.id)
-                        ? "red"
-                        : "none"
-                    }
-                  />
-                </button>
+                {/* Nama + Hati */}
+                <div className="flex items-center justify-between mb-1">
+                  <h2 className="text-base font-semibold">{product.name}</h2>
+                  <button onClick={() => toggleFavorite(product)}>
+                    <IoMdHeart
+                      size={20}
+                      className={
+                        favorites.some((fav) => fav.id === product.id)
+                          ? "text-black"
+                          : "text-gray-400"
+                      }
+                    />
+                  </button>
+                </div>
 
-                {/* Buttons */}
-                <div className="flex gap-2">
-                  <button className="border border-gray-400 text-sm px-3 py-1 rounded hover:bg-gray-100">
+                {/* Deskripsi */}
+                <p className="text-gray-500 text-xs mb-1">Description</p>
+
+                {/* Harga */}
+                <p className="text-lg font-semibold text-gray-900 mb-3">
+                  Rp {Number(product.price).toLocaleString("id-ID")}
+                </p>
+
+                {/* Tombol */}
+                <div className="flex gap-2 mt-auto">
+                  <button className="flex-1 border border-gray-400 text-sm font-medium px-3 py-0.5 rounded-lg hover:bg-gray-100 transition">
                     Quick View
                   </button>
                   <button
                     onClick={() => addToCart(product)}
-                    className="bg-black text-white text-sm px-3 py-1 rounded hover:bg-gray-800"
+                    className="flex-1 bg-black text-white text-sm font-medium px-3 py-0.5 rounded-lg hover:bg-gray-800 transition"
                   >
                     Add to Cart
                   </button>
@@ -111,6 +143,8 @@ const Favorites = () => {
           </div>
         )}
       </main>
+
+      {/* Footer */}
       <Footer />
     </div>
   );
