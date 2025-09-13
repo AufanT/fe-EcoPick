@@ -16,30 +16,22 @@ export default function DashboardAdmin() {
     setLoading(true);
     try {
       const res = await getProducts(pageNum, limit);
+      console.log("📡 Backend response:", res.data);
 
-      console.log("🔗 URL dipanggil:", res.config?.url);
-      console.log("📦 Full response:", res);
-
-      // Pastikan respon berupa JSON
-      const contentType = res.headers["content-type"] || "";
-      if (!contentType.includes("application/json")) {
-        console.error("❌ Response bukan JSON:", res.data);
-        setProducts([]);
-        return;
-      }
+      const data = res.data;
 
       // Normalisasi struktur data
-      const data = res.data;
       const items =
-        data.products || // kalau pakai pagination {products, totalPages, currentPage}
-        data.data || // fallback kalau API pakai "data"
-        (Array.isArray(data) ? data : []); // fallback kalau langsung array
+        data.products || // kalau pakai { products, totalPages, currentPage }
+        data.data || // kalau pakai { data: [...] }
+        data.items || // kalau pakai { items: [...] }
+        (Array.isArray(data) ? data : []); // kalau langsung array
 
       setProducts(items);
-      setTotalPages(data.totalPages || 1);
-      setPage(data.currentPage || pageNum);
+      setTotalPages(data.totalPages || data.meta?.totalPages || 1);
+      setPage(data.currentPage || data.meta?.page || pageNum);
     } catch (err) {
-      console.error("❌ Error fetch produk:", err.response || err.message);
+      console.error("❌ Error fetching products:", err.response || err.message);
       setProducts([]);
     } finally {
       setLoading(false);
@@ -62,9 +54,12 @@ export default function DashboardAdmin() {
         </div>
 
         <main className="flex-grow p-6">
-          <button className="bg-black text-white px-4 py-2 rounded-md mb-6">
-            <Link to="/addproduct">Add Product</Link>
-          </button>
+          <Link
+            to="/addproduct"
+            className="inline-block bg-black text-white px-4 py-2 rounded-md mb-6"
+          >
+            Add Product
+          </Link>
 
           <div className="bg-white rounded-lg shadow">
             {loading ? (
@@ -84,7 +79,7 @@ export default function DashboardAdmin() {
                 <tbody>
                   {products.map((product) => (
                     <tr
-                      key={product.id}
+                      key={product.id || product._id}
                       className="border-b hover:bg-gray-50"
                     >
                       <td className="p-4">
@@ -96,7 +91,9 @@ export default function DashboardAdmin() {
                         />
                       </td>
                       <td className="p-4">{product.name}</td>
-                      <td className="p-4">{product.category_id || "-"}</td>
+                      <td className="p-4">
+                        {product.category?.name || product.category_id || "-"}
+                      </td>
                       <td className="p-4">
                         Rp {Number(product.price).toLocaleString("id-ID")}
                       </td>
@@ -111,7 +108,7 @@ export default function DashboardAdmin() {
                 </tbody>
               </table>
             ) : (
-              <p className="p-4">Belum ada produk.</p>
+              <p className="p-4">No products yet.</p>
             )}
           </div>
 
@@ -142,7 +139,9 @@ export default function DashboardAdmin() {
             <button
               className="border px-3 py-1 rounded-md text-gray-400"
               disabled={page === totalPages}
-              onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}
+              onClick={() =>
+                setPage((prev) => Math.min(prev + 1, totalPages))
+              }
             >
               &gt;
             </button>
