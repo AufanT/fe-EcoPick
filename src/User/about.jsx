@@ -18,7 +18,7 @@ const About = () => {
     { name: "Alvina Roslinda", role: "Web Programming", image: "/public/fotovina.png" },
     { name: "Laila Qadriyah", role: "Web Programming", image: "/public/fotolaila.jpg" },
     { name: "Aufan T.", role: "Web Programming", image: "/images/avatar.png" },
-    { name: "Izzatul Mahdiyah", role: "Network Engineering", image: "/public/fotoimah.jpg" },
+    { name: "Izzatul Mahdiyah", role: "System Engineering", image: "/public/fotoimah.jpg" },
     { name: "Alif Ilham P.", role: "Network Engineering", image: "/images/avatar.png" },
     { name: "Dea Arlia", role: "Machine Learning", image: "/public/fotodea.jpg" },
     { name: "Fathurrahman A.", role: "Machine Learning", image: "/public/fotofathur.jpg" },
