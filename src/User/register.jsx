@@ -1,58 +1,60 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import api from '../services/api.js'; // axios instance
-import Footer from '../Components/Footer';
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import api from "../services/api.js"; // axios instance
+import Footer from "../Components/Footer";
 
 const Register = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    full_name: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-    address: '',
-    phone_number: '',
-    agreeToTerms: false
+    full_name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+    address: "",
+    phone_number: "",
+    agreeToTerms: false,
   });
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value
+      [name]: type === "checkbox" ? checked : value,
     }));
     if (errors[name]) {
-      setErrors(prev => ({
+      setErrors((prev) => ({
         ...prev,
-        [name]: ''
+        [name]: "",
       }));
     }
   };
 
   const validateForm = () => {
     const newErrors = {};
-    if (!formData.full_name.trim()) newErrors.full_name = 'Full name is required';
+    if (!formData.full_name.trim())
+      newErrors.full_name = "Full name is required";
     if (!formData.email) {
-      newErrors.email = 'Email is required';
+      newErrors.email = "Email is required";
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Email is invalid';
+      newErrors.email = "Email is invalid";
     }
     if (!formData.password) {
-      newErrors.password = 'Password is required';
+      newErrors.password = "Password is required";
     } else if (formData.password.length < 8) {
-      newErrors.password = 'Password must be at least 8 characters';
+      newErrors.password = "Password must be at least 8 characters";
     }
     if (!formData.confirmPassword) {
-      newErrors.confirmPassword = 'Please confirm your password';
+      newErrors.confirmPassword = "Please confirm your password";
     } else if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = 'Passwords do not match';
+      newErrors.confirmPassword = "Passwords do not match";
     }
-    if (!formData.address.trim()) newErrors.address = 'Address is required';
-    if (!formData.phone_number.trim()) newErrors.phone_number = 'Phone number is required';
+    if (!formData.address.trim()) newErrors.address = "Address is required";
+    if (!formData.phone_number.trim())
+      newErrors.phone_number = "Phone number is required";
     if (!formData.agreeToTerms) {
-      newErrors.agreeToTerms = 'You must agree to the terms and conditions';
+      newErrors.agreeToTerms = "You must agree to the terms and conditions";
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -69,7 +71,7 @@ const Register = () => {
         email: formData.email,
         password: formData.password,
         address: formData.address,
-        phone_number: formData.phone_number
+        phone_number: formData.phone_number,
       });
 
       console.log("Register success:", res.data);
@@ -87,19 +89,51 @@ const Register = () => {
     <div className="min-h-screen bg-green-50">
       <div className="pt-8 pb-16 px-4">
         <div className="max-w-md mx-auto">
+          {/* Back Button */}
+          <div className="mb-8">
+            <Link
+              to="/"
+              className="inline-flex items-center gap-3 px-6 py-3 bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md hover:border-green-300 transition-all duration-300 group"
+            >
+              <svg
+                className="w-5 h-5 text-gray-600 group-hover:text-green-600 transition-colors"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M15 19l-7-7 7-7"
+                />
+              </svg>
+              <span className="text-gray-700 group-hover:text-green-600 font-medium transition-colors">
+                Back to Dashboard
+              </span>
+            </Link>
+          </div>
+
           <div className="bg-white rounded-2xl shadow-xl p-8">
             <div className="text-center mb-8">
               <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <span className="text-2xl">🌱</span>
               </div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">Join EcoPick</h1>
-              <p className="text-gray-600">Create your account and start your eco-friendly journey</p>
+              <h1 className="text-3xl font-bold text-gray-900 mb-2">
+                Join EcoPick
+              </h1>
+              <p className="text-gray-600">
+                Create your account and start your eco-friendly journey
+              </p>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Full Name */}
               <div>
-                <label htmlFor="full_name" className="block text-sm font-medium text-gray-700 mb-2">
+                <label
+                  htmlFor="full_name"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
                   Full Name
                 </label>
                 <input
@@ -109,16 +143,25 @@ const Register = () => {
                   value={formData.full_name}
                   onChange={handleChange}
                   className={`w-full px-4 py-3 rounded-xl border-2 transition-colors focus:outline-none ${
-                    errors.full_name ? 'border-red-300 focus:border-red-500' : 'border-gray-200 focus:border-green-500'
+                    errors.full_name
+                      ? "border-red-300 focus:border-red-500"
+                      : "border-gray-200 focus:border-green-500"
                   }`}
                   placeholder="John Doe"
                 />
-                {errors.full_name && <p className="mt-1 text-sm text-red-600">{errors.full_name}</p>}
+                {errors.full_name && (
+                  <p className="mt-1 text-sm text-red-600">
+                    {errors.full_name}
+                  </p>
+                )}
               </div>
 
               {/* Email */}
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                <label
+                  htmlFor="email"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
                   Email Address
                 </label>
                 <input
@@ -128,16 +171,23 @@ const Register = () => {
                   value={formData.email}
                   onChange={handleChange}
                   className={`w-full px-4 py-3 rounded-xl border-2 transition-colors focus:outline-none ${
-                    errors.email ? 'border-red-300 focus:border-red-500' : 'border-gray-200 focus:border-green-500'
+                    errors.email
+                      ? "border-red-300 focus:border-red-500"
+                      : "border-gray-200 focus:border-green-500"
                   }`}
                   placeholder="you@example.com"
                 />
-                {errors.email && <p className="mt-1 text-sm text-red-600">{errors.email}</p>}
+                {errors.email && (
+                  <p className="mt-1 text-sm text-red-600">{errors.email}</p>
+                )}
               </div>
 
               {/* Password */}
               <div>
-                <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+                <label
+                  htmlFor="password"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
                   Password
                 </label>
                 <input
@@ -147,16 +197,23 @@ const Register = () => {
                   value={formData.password}
                   onChange={handleChange}
                   className={`w-full px-4 py-3 rounded-xl border-2 transition-colors focus:outline-none ${
-                    errors.password ? 'border-red-300 focus:border-red-500' : 'border-gray-200 focus:border-green-500'
+                    errors.password
+                      ? "border-red-300 focus:border-red-500"
+                      : "border-gray-200 focus:border-green-500"
                   }`}
                   placeholder="Create a password"
                 />
-                {errors.password && <p className="mt-1 text-sm text-red-600">{errors.password}</p>}
+                {errors.password && (
+                  <p className="mt-1 text-sm text-red-600">{errors.password}</p>
+                )}
               </div>
 
               {/* Confirm Password */}
               <div>
-                <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-2">
+                <label
+                  htmlFor="confirmPassword"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
                   Confirm Password
                 </label>
                 <input
@@ -166,16 +223,25 @@ const Register = () => {
                   value={formData.confirmPassword}
                   onChange={handleChange}
                   className={`w-full px-4 py-3 rounded-xl border-2 transition-colors focus:outline-none ${
-                    errors.confirmPassword ? 'border-red-300 focus:border-red-500' : 'border-gray-200 focus:border-green-500'
+                    errors.confirmPassword
+                      ? "border-red-300 focus:border-red-500"
+                      : "border-gray-200 focus:border-green-500"
                   }`}
                   placeholder="Confirm your password"
                 />
-                {errors.confirmPassword && <p className="mt-1 text-sm text-red-600">{errors.confirmPassword}</p>}
+                {errors.confirmPassword && (
+                  <p className="mt-1 text-sm text-red-600">
+                    {errors.confirmPassword}
+                  </p>
+                )}
               </div>
 
               {/* Address */}
               <div>
-                <label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-2">
+                <label
+                  htmlFor="address"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
                   Address
                 </label>
                 <input
@@ -185,16 +251,23 @@ const Register = () => {
                   value={formData.address}
                   onChange={handleChange}
                   className={`w-full px-4 py-3 rounded-xl border-2 transition-colors focus:outline-none ${
-                    errors.address ? 'border-red-300 focus:border-red-500' : 'border-gray-200 focus:border-green-500'
+                    errors.address
+                      ? "border-red-300 focus:border-red-500"
+                      : "border-gray-200 focus:border-green-500"
                   }`}
                   placeholder="Jl. Merdeka No. 123"
                 />
-                {errors.address && <p className="mt-1 text-sm text-red-600">{errors.address}</p>}
+                {errors.address && (
+                  <p className="mt-1 text-sm text-red-600">{errors.address}</p>
+                )}
               </div>
 
               {/* Phone Number */}
               <div>
-                <label htmlFor="phone_number" className="block text-sm font-medium text-gray-700 mb-2">
+                <label
+                  htmlFor="phone_number"
+                  className="block text-sm font-medium text-gray-700 mb-2"
+                >
                   Phone Number
                 </label>
                 <input
@@ -204,11 +277,17 @@ const Register = () => {
                   value={formData.phone_number}
                   onChange={handleChange}
                   className={`w-full px-4 py-3 rounded-xl border-2 transition-colors focus:outline-none ${
-                    errors.phone_number ? 'border-red-300 focus:border-red-500' : 'border-gray-200 focus:border-green-500'
+                    errors.phone_number
+                      ? "border-red-300 focus:border-red-500"
+                      : "border-gray-200 focus:border-green-500"
                   }`}
                   placeholder="08123456789"
                 />
-                {errors.phone_number && <p className="mt-1 text-sm text-red-600">{errors.phone_number}</p>}
+                {errors.phone_number && (
+                  <p className="mt-1 text-sm text-red-600">
+                    {errors.phone_number}
+                  </p>
+                )}
               </div>
 
               {/* Terms */}
@@ -222,12 +301,27 @@ const Register = () => {
                     className="w-4 h-4 text-green-600 border-gray-300 rounded focus:ring-green-500 mt-1"
                   />
                   <span className="ml-2 text-sm text-gray-600">
-                    I agree to the{' '}
-                    <Link to="/terms" className="text-green-600 hover:text-green-700">Terms and Conditions</Link> and{' '}
-                    <Link to="/privacy" className="text-green-600 hover:text-green-700">Privacy Policy</Link>
+                    I agree to the{" "}
+                    <Link
+                      to="/terms"
+                      className="text-green-600 hover:text-green-700"
+                    >
+                      Terms and Conditions
+                    </Link>{" "}
+                    and{" "}
+                    <Link
+                      to="/privacy"
+                      className="text-green-600 hover:text-green-700"
+                    >
+                      Privacy Policy
+                    </Link>
                   </span>
                 </label>
-                {errors.agreeToTerms && <p className="mt-1 text-sm text-red-600">{errors.agreeToTerms}</p>}
+                {errors.agreeToTerms && (
+                  <p className="mt-1 text-sm text-red-600">
+                    {errors.agreeToTerms}
+                  </p>
+                )}
               </div>
 
               {/* Submit */}
@@ -242,8 +336,11 @@ const Register = () => {
 
             <div className="mt-8 text-center">
               <p className="text-gray-600">
-                Already have an account?{' '}
-                <Link to="/login" className="text-green-600 hover:text-green-700 font-semibold">
+                Already have an account?{" "}
+                <Link
+                  to="/login"
+                  className="text-green-600 hover:text-green-700 font-semibold"
+                >
                   Sign in here
                 </Link>
               </p>

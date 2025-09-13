@@ -22,6 +22,55 @@ const ProductDetail = () => {
   const product = products.find((p) => p.id === parseInt(id));
   const [quantity, setQuantity] = useState(1);
 
+  // state review
+  const [reviews, setReviews] = useState([
+    {
+      id: 1,
+      name: "Amanda Putri",
+      sentiment: "Positif",
+      text: "Tumbler ini cocok banget untuk dipakai sehari-hari. Bahannya kokoh, mudah dibersihkan, dan tidak bocor. Ukurannya juga pas untuk dibawa di kuliah.",
+    },
+    {
+      id: 2,
+      name: "Mikael Perdana",
+      sentiment: "Positif",
+      text: "Tumbler ini sangat membantu saya mengurangi penggunaan botol plastik sekali pakai. Desainnya elegan dan tahan lama, benar-benar ramah lingkungan.",
+    },
+    {
+      id: 3,
+      name: "Akmal Sanjaya",
+      sentiment: "Negatif",
+      text: "Saya kurang puas dengan kualitas tutupnya. Baru seminggu dipakai sudah bocor. Menurut saya tidak sebanding dengan harganya.",
+    },
+    {
+      id: 4,
+      name: "Arifia Mentari",
+      sentiment: "Negatif",
+      text: "Warnanya cepat pudar setelah beberapa kali dicuci, jadi terlihat seperti barang lama padahal baru dibeli.",
+    },
+  ]);
+
+  const [newName, setNewName] = useState("");
+  const [newText, setNewText] = useState("");
+  const [newSentiment, setNewSentiment] = useState("Positif");
+
+  const handleAddReview = (e) => {
+    e.preventDefault();
+    if (!newName || !newText) return;
+
+    const newReview = {
+      id: reviews.length + 1,
+      name: newName,
+      sentiment: newSentiment,
+      text: newText,
+    };
+
+    setReviews([...reviews, newReview]);
+    setNewName("");
+    setNewText("");
+    setNewSentiment("Positif");
+  };
+
   if (!product) {
     return (
       <div className="min-h-screen flex items-center justify-center text-center">
@@ -111,28 +160,68 @@ const ProductDetail = () => {
           </h2>
           <p className="text-gray-700">{product.description}</p>
           <ul className="list-disc list-inside mt-4 text-gray-700 space-y-1">
-            <li>
-              Premium Stainless Steel: Durable, rust-resistant, and safe for all
-              beverages.
-            </li>
-            <li>
-              Eco-Friendly Choice: Reusable and sustainable, reducing plastic
-              waste.
-            </li>
-            <li>
-              Double-Wall Insulation: Keeps drinks cold for up to 24 hours or
-              hot for up to 12 hours.
-            </li>
-            <li>
-              Elegant & Minimalist Design: Available in Black, White, and Rose
-              Gold.
-            </li>
-            <li>
-              Portable & Practical: Perfect for daily use, sports, school, or
-              travel.
-            </li>
+            <li>Premium Stainless Steel: Durable, rust-resistant, and safe for all beverages.</li>
+            <li>Eco-Friendly Choice: Reusable and sustainable, reducing plastic waste.</li>
+            <li>Double-Wall Insulation: Keeps drinks cold for up to 24 hours or hot for up to 12 hours.</li>
+            <li>Elegant & Minimalist Design: Available in Black, White, and Rose Gold.</li>
+            <li>Portable & Practical: Perfect for daily use, sports, school, or travel.</li>
           </ul>
         </div>
+      </div>
+
+      {/* Review Product */}
+      <div className="max-w-5xl mx-auto px-6 pb-12">
+        <h2 className="text-lg font-semibold mb-4">Review Product</h2>
+        <div className="space-y-4">
+          {reviews.map((r) => (
+            <div
+              key={r.id}
+              className="flex items-start gap-3 p-4 border border-gray-200 rounded-lg"
+            >
+              {/* Avatar placeholder */}
+              <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 font-bold">
+                {r.name.charAt(0)}
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <h4 className="font-semibold text-gray-900">{r.name}</h4>
+                  <span
+                    className={`text-xs px-2 py-0.5 rounded-full ${
+                      r.sentiment === "Positif"
+                        ? "bg-green-100 text-green-700"
+                        : "bg-red-100 text-red-700"
+                    }`}
+                  >
+                    {r.sentiment}
+                  </span>
+                </div>
+                <p className="text-gray-700 mt-1">{r.text}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Form Tambah Review */}
+        <form
+          onSubmit={handleAddReview}
+          className="mt-8 p-6 border rounded-lg bg-gray-50"
+        >
+          <h3 className="text-lg font-semibold mb-4">Tambah Review</h3>
+         
+          <textarea
+            placeholder="Tulis review kamu..."
+            value={newText}
+            onChange={(e) => setNewText(e.target.value)}
+            className="w-full px-4 py-2 border rounded mb-4 focus:ring-2 focus:ring-green-400 focus:outline-none"
+          />
+    
+          <button
+            type="submit"
+            className="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700 transition"
+          >
+            Kirim Review
+          </button>
+        </form>
       </div>
     </div>
   );
