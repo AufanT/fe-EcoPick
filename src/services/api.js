@@ -2,7 +2,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "https://beecopick.maturino.my.id/api",
+  baseURL: "https://203ba49b8370.ngrok-free.app/api",
   // NOTE: jangan set Content-Type global di sini karena kita butuh kirim
   // baik JSON maupun FormData tergantung request
 });

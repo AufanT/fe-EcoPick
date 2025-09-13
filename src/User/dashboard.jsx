@@ -305,7 +305,7 @@ export const Dashboard = () => {
 
       {/* About */}
       <section id="about" className="bg-white" data-aos="fade-up">
-        <div className="max-w-6xl mx-auto px-6 py-16 grid md:grid-cols-2 gap-10 items-center">
+        <div className="max-w-6xl mx-auto px-6 py-16 grid md:grid-cols-2 gap-10 items-center mt-8">
           <div>
             <h2 className="text-2xl md:text-3xl font-bold text-gray-900">
               About EcoPick
