@@ -66,8 +66,8 @@ export default function OrderManagement() {
           {/* Table */}
           <div className="bg-white mt-6 rounded-lg shadow-2xl">
             <table className="w-full text-left border-gray-400">
-              <thead className="border-b border-gray-300">
-                <tr className="text-black border-gray-200">
+              <thead className="border-b border-gray-800">
+                <tr className="text-black border-b border-gray-200">
                   <th className="p-4">ORDER ID</th>
                   <th className="p-4">NAME</th>
                   <th className="p-4">NAME PRODUCT</th>
@@ -90,10 +90,10 @@ export default function OrderManagement() {
                     <td
                       className={`p-4 ${
                         order.status === "Delivered"
-                          ? "inline-flex bg-green-200 mt-3 mb-3 text-green-400 text-sm rounded-2xl py-1.5 text-center shadow"
+                          ? "inline-flex bg-green-200 mt-3 mb-3 text-green-00 text-sm rounded-2xl py-1.5 text-center shadow"
                           : order.status === "Packed"
-                          ? "inline-flex text-red-400 text-sm bg-red-200 mt-3 mb-3 rounded-2xl py-1.5 text-center shadow"
-                          : "inline-flex text-blue-400 text-sm bg-blue-200 rounded-2xl mt-3 mb-3 py-1.5 text-center shadow"
+                          ? "inline-flex text-red-600 text-sm bg-red-200 mt-3 mb-3 rounded-2xl py-1.5 text-center shadow"
+                          : "inline-flex text-blue-600 text-sm bg-blue-200 rounded-2xl mt-3 mb-3 py-1.5 text-center shadow"
                       }`}
                     >
                       {order.status}
