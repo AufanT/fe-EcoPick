@@ -327,7 +327,7 @@ export const Dashboard = () => {
             data-aos="zoom-in"
           >
             <img
-              src="/about.jpg"
+              src="/public/eco.jpeg"
               alt="Eco mission"
               className="w-full h-full object-cover"
               loading="lazy"

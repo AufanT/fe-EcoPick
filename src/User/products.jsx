@@ -1,284 +1,201 @@
-import React, { useState, useMemo } from 'react';
-import { Link } from 'react-router-dom';
-import Navbar from '../Components/Navbar';
-import Footer from '../Components/Footer';
+import React, { useState } from "react";
+import { useParams, Link } from "react-router-dom";
 
-const Products = () => {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('all');
-  const [sortBy, setSortBy] = useState('name');
-  const [priceRange, setPriceRange] = useState([0, 200000]);
+const products = [
+  {
+    id: 1,
+    name: "Stainless Steel Tumbler - Black",
+    price: "Rp 130.000",
+    img: "/public/image 24 (1).png",
+    description:
+      "Switch to a more eco-friendly lifestyle with this stainless steel reusable bottle. Designed for long-term use, it helps reduce single-use plastic waste while keeping your drinks at the perfect temperature.",
+    stock: 1810,
+    rating: 4.0,
+    reviews: "2.5K",
+    sold: "3K",
+    variants: ["Black", "White", "Rose Gold"],
+  },
+];
 
-  // Sample products data
-  const products = [
-    { id: 1, name: 'Bamboo Toothbrush Set', price: 29000, category: 'personal-care', image: '/product-1.jpg', rating: 4.8, reviews: 124, inStock: true },
-    { id: 2, name: 'Reusable Straw Set', price: 35000, category: 'kitchen', image: '/product-2.jpg', rating: 4.6, reviews: 89, inStock: true },
-    { id: 3, name: 'Organic Soap Bar', price: 25000, category: 'personal-care', image: '/product-3.jpg', rating: 4.9, reviews: 156, inStock: true },
-    { id: 4, name: 'Cotton Tote Bag', price: 49000, category: 'lifestyle', image: '/product-4.jpg', rating: 4.7, reviews: 67, inStock: true },
-    { id: 5, name: 'Bamboo Cutlery Set', price: 45000, category: 'kitchen', image: '/product-5.jpg', rating: 4.5, reviews: 92, inStock: false },
-    { id: 6, name: 'Eco-Friendly Water Bottle', price: 75000, category: 'lifestyle', image: '/product-6.jpg', rating: 4.8, reviews: 203, inStock: true },
-    { id: 7, name: 'Natural Shampoo Bar', price: 32000, category: 'personal-care', image: '/product-7.jpg', rating: 4.6, reviews: 78, inStock: true },
-    { id: 8, name: 'Bamboo Phone Case', price: 55000, category: 'lifestyle', image: '/product-8.jpg', rating: 4.4, reviews: 45, inStock: true },
-  ];
+const reviews = [
+  {
+    id: 1,
+    name: "Amanda Putri",
+    sentiment: "Positif",
+    text: "Tumbler ini cocok banget untuk dipakai sehari-hari. Bahannya kokoh, mudah dibersihkan, dan tidak bocor. Ukurannya juga pas untuk dibawa di kuliah.",
+  },
+  {
+    id: 2,
+    name: "Mikael Perdana",
+    sentiment: "Positif",
+    text: "Tumbler ini sangat membantu saya mengurangi penggunaan botol plastik sekali pakai. Desainnya elegan dan tahan lama, benar-benar ramah lingkungan.",
+  },
+  {
+    id: 3,
+    name: "Akmal Sanjaya",
+    sentiment: "Negatif",
+    text: "Saya kurang puas dengan kualitas tutupnya. Baru seminggu dipakai sudah bocor. Menurut saya tidak sebanding dengan harganya.",
+  },
+  {
+    id: 4,
+    name: "Arifia Mentari",
+    sentiment: "Negatif",
+    text: "Warnanya cepat pudar setelah beberapa kali dicuci, jadi terlihat seperti barang lama padahal baru dibeli.",
+  },
+];
 
-  const categories = [
-    { value: 'all', label: 'All Products' },
-    { value: 'personal-care', label: 'Personal Care' },
-    { value: 'kitchen', label: 'Kitchen' },
-    { value: 'lifestyle', label: 'Lifestyle' },
-  ];
+const ProductDetail = () => {
+  const { id } = useParams();
+  const product = products.find((p) => p.id === parseInt(id));
+  const [quantity, setQuantity] = useState(1);
 
-  // Filter and sort products
-  const filteredProducts = useMemo(() => {
-    let filtered = products.filter(product => {
-      const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesCategory = selectedCategory === 'all' || product.category === selectedCategory;
-      const matchesPrice = product.price >= priceRange[0] && product.price <= priceRange[1];
-      
-      return matchesSearch && matchesCategory && matchesPrice;
-    });
-
-    // Sort products
-    filtered.sort((a, b) => {
-      switch (sortBy) {
-        case 'price-low':
-          return a.price - b.price;
-        case 'price-high':
-          return b.price - a.price;
-        case 'rating':
-          return b.rating - a.rating;
-        case 'name':
-        default:
-          return a.name.localeCompare(b.name);
-      }
-    });
-
-    return filtered;
-  }, [searchTerm, selectedCategory, sortBy, priceRange]);
-
-  const handlePriceRangeChange = (index, value) => {
-    const newRange = [...priceRange];
-    newRange[index] = parseInt(value);
-    setPriceRange(newRange);
-  };
+  if (!product) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-center">
+        <h2 className="text-2xl font-bold">Produk tidak ditemukan</h2>
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="pt-8 pb-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Back Button */}
-          <div className="mb-8">
-            <Link 
-              to="/" 
-              className="inline-flex items-center gap-3 px-6 py-3 bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md hover:border-green-300 transition-all duration-300 group"
+    <div className="min-h-screen bg-white">
+      {/* Breadcrumb */}
+      <div className="max-w-5xl mx-auto px-6 pt-6 text-sm text-gray-600">
+        <nav className="flex items-center gap-2">
+          <Link to="/" className="hover:underline">
+            Dashboard
+          </Link>
+          <span>›</span>
+          <span className="text-gray-900 font-medium">View Product</span>
+        </nav>
+      </div>
+
+      {/* Konten Utama */}
+      <div className="max-w-5xl mx-auto px-6 py-10 grid md:grid-cols-2 gap-10 items-start">
+        {/* Gambar Produk */}
+        <div className="rounded-xl border border-gray-200 overflow-hidden flex items-center justify-center bg-gray-50 p-6">
+          <img
+            src={product.img}
+            alt={product.name}
+            className="max-h-[300px] w-auto object-contain"
+          />
+        </div>
+        {/* Detail Produk */}
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">{product.name}</h1>
+
+          {/* Rating */}
+          <div className="flex items-center gap-3 mt-2 text-sm text-gray-600">
+            <span>(4,0)</span>
+            <span>★★★★☆</span>
+            <span>{product.reviews} Reviews</span>
+            <span>{product.sold} Sold</span>
+          </div>
+
+          {/* Harga */}
+          <p className="mt-4 text-2xl font-bold text-black">{product.price}</p>
+
+          {/* Quantity */}
+          <div className="mt-4 flex items-center gap-3">
+            <button
+              onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+              className="px-3 py-1 border border-gray-300 rounded"
             >
-              <svg className="w-5 h-5 text-gray-600 group-hover:text-green-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-              </svg>
-              <span className="text-gray-700 group-hover:text-green-600 font-medium transition-colors">Back to Dashboard</span>
-            </Link>
+              -
+            </button>
+            <span className="text-lg font-semibold">{quantity}</span>
+            <button
+              onClick={() => setQuantity((q) => q + 1)}
+              className="px-3 py-1 border border-gray-300 rounded"
+            >
+              +
+            </button>
+            <span className="text-gray-500">{product.stock} in Stock</span>
           </div>
 
-          {/* Header */}
-          <div className="mb-8">
-            <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Our Products</h1>
-            <p className="text-gray-600 text-lg">Discover our curated collection of eco-friendly products</p>
+          {/* Tombol */}
+          <div className="mt-6 flex gap-3">
+            <button className="px-6 py-3 rounded-xl border border-gray-300 text-gray-700">
+              + Favorite
+            </button>
+            <button className="px-6 py-3 rounded-xl bg-black text-white">
+              Add to Cart
+            </button>
           </div>
 
-          <div className="flex flex-col lg:flex-row gap-8">
-            {/* Sidebar Filters */}
-            <div className="lg:w-64 flex-shrink-0">
-              <div className="bg-white rounded-2xl shadow-sm p-6 sticky top-32">
-                <h3 className="text-lg font-semibold text-gray-900 mb-6">Filters</h3>
-                
-                {/* Search */}
-                <div className="mb-6">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Search</label>
-                  <input
-                    type="text"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    placeholder="Search products..."
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                  />
-                </div>
-
-                {/* Category Filter */}
-                <div className="mb-6">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Category</label>
-                  <div className="space-y-2">
-                    {categories.map(category => (
-                      <label key={category.value} className="flex items-center">
-                        <input
-                          type="radio"
-                          name="category"
-                          value={category.value}
-                          checked={selectedCategory === category.value}
-                          onChange={(e) => setSelectedCategory(e.target.value)}
-                          className="w-4 h-4 text-green-600 border-gray-300 focus:ring-green-500"
-                        />
-                        <span className="ml-2 text-sm text-gray-700">{category.label}</span>
-                      </label>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Price Range */}
-                <div className="mb-6">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Price Range</label>
-                  <div className="space-y-2">
-                    <input
-                      type="number"
-                      value={priceRange[0]}
-                      onChange={(e) => handlePriceRangeChange(0, e.target.value)}
-                      placeholder="Min"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                    />
-                    <input
-                      type="number"
-                      value={priceRange[1]}
-                      onChange={(e) => handlePriceRangeChange(1, e.target.value)}
-                      placeholder="Max"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                    />
-                  </div>
-                </div>
-
-                {/* Sort */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Sort By</label>
-                  <select
-                    value={sortBy}
-                    onChange={(e) => setSortBy(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                  >
-                    <option value="name">Name (A-Z)</option>
-                    <option value="price-low">Price (Low to High)</option>
-                    <option value="price-high">Price (High to Low)</option>
-                    <option value="rating">Rating</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-
-            {/* Products Grid */}
-            <div className="flex-1">
-              {/* Results Header */}
-              <div className="flex items-center justify-between mb-6">
-                <p className="text-gray-600">
-                  Showing {filteredProducts.length} of {products.length} products
-                </p>
-                <die className="flex items-center gap-2">
-                  <span className="text-sm text-gray-600">View:</span>
-                  <button className="p-2 border border-gray-300 rounded-lg hover:bg-gray-50">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
-                    </svg>
-                  </button>
-                  <button className="p-2 border border-gray-300 rounded-lg hover:bg-gray-50">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
-                    </svg>
-                  </button>
-                </die>
-              </div>
-
-              {/* Products Grid */}
-              {filteredProducts.length === 0 ? (
-                <div className="text-center py-16">
-                  <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <span className="text-4xl">🔍</span>
-                  </div>
-                  <h3 className="text-xl font-semibold text-gray-700 mb-2">No products found</h3>
-                  <p className="text-gray-500 mb-6">Try adjusting your search or filter criteria</p>
-                  <button
-                    onClick={() => {
-                      setSearchTerm('');
-                      setSelectedCategory('all');
-                      setPriceRange([0, 200000]);
-                    }}
-                    className="px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg transition-colors"
-                  >
-                    Clear Filters
-                  </button>
-                </div>
-              ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {filteredProducts.map(product => (
-                    <div key={product.id} className="bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow overflow-hidden">
-                      <Link to={`/product/${product.id}`}>
-                        <div className="aspect-[4/3] bg-gray-200 overflow-hidden relative">
-                          <img
-                            src={product.image}
-                            alt={product.name}
-                            className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-                          />
-                          {!product.inStock && (
-                            <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-                              <span className="text-white font-semibold">Out of Stock</span>
-                            </div>
-                          )}
-                          <div className="absolute top-3 right-3">
-                            <button className="w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-md hover:bg-gray-50 transition-colors">
-                              <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                              </svg>
-                            </button>
-                          </div>
-                        </div>
-                      </Link>
-                      
-                      <div className="p-4">
-                        <Link to={`/product/${product.id}`}>
-                          <h3 className="font-semibold text-gray-900 hover:text-green-600 transition-colors mb-2">
-                            {product.name}
-                          </h3>
-                        </Link>
-                        
-                        <div className="flex items-center gap-2 mb-2">
-                          <div className="flex items-center">
-                            {[...Array(5)].map((_, i) => (
-                              <svg
-                                key={i}
-                                className={`w-4 h-4 ${i < Math.floor(product.rating) ? 'text-yellow-400' : 'text-gray-300'}`}
-                                fill="currentColor"
-                                viewBox="0 0 20 20"
-                              >
-                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                              </svg>
-                            ))}
-                          </div>
-                          <span className="text-sm text-gray-600">({product.reviews})</span>
-                        </div>
-                        
-                        <div className="flex items-center justify-between">
-                          <span className="text-xl font-bold">
-                            Rp {product.price.toLocaleString('id-ID')}
-                          </span>
-                          <button
-                            disabled={!product.inStock}
-                            className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                              product.inStock
-                                ? 'bg-black hover:bg-green-700 text-white'
-                                : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                            }`}
-                          >
-                            {product.inStock ? 'Add to Cart' : 'Out of Stock'}
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
+          {/* Return Policy */}
+          <p className="mt-4 text-sm text-gray-500 flex items-center gap-2">
+            <span>↺</span> 15-Day Free Return
+          </p>
         </div>
       </div>
 
-      <Footer />
+      {/* Deskripsi */}
+      <div className="max-w-5xl mx-auto px-6 pb-12">
+        <div className="bg-white rounded-xl border border-gray-200 p-6">
+          <h2 className="text-lg font-semibold mb-3">
+            Description & Specification
+          </h2>
+          <p className="text-gray-700">{product.description}</p>
+          <ul className="list-disc list-inside mt-4 text-gray-700 space-y-1">
+            <li>
+              Premium Stainless Steel: Durable, rust-resistant, and safe for all
+              beverages.
+            </li>
+            <li>
+              Eco-Friendly Choice: Reusable and sustainable, reducing plastic
+              waste.
+            </li>
+            <li>
+              Double-Wall Insulation: Keeps drinks cold for up to 24 hours or
+              hot for up to 12 hours.
+            </li>
+            <li>
+              Elegant & Minimalist Design: Available in Black, White, and Rose
+              Gold.
+            </li>
+            <li>
+              Portable & Practical: Perfect for daily use, sports, school, or
+              travel.
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      {/* Review Product */}
+      <div className="max-w-5xl mx-auto px-6 pb-12">
+        <h2 className="text-lg font-semibold mb-4">Review Product</h2>
+        <div className="space-y-4">
+          {reviews.map((r) => (
+            <div
+              key={r.id}
+              className="flex items-start gap-3 p-4 border border-gray-200 rounded-lg"
+            >
+              {/* Avatar placeholder */}
+              <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 font-bold">
+                {r.name.charAt(0)}
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <h4 className="font-semibold text-gray-900">{r.name}</h4>
+                  <span
+                    className={`text-xs px-2 py-0.5 rounded-full ${
+                      r.sentiment === "Positif"
+                        ? "bg-green-100 text-green-700"
+                        : "bg-red-100 text-red-700"
+                    }`}
+                  >
+                    {r.sentiment}
+                  </span>
+                </div>
+                <p className="text-gray-700 mt-1">{r.text}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 };
 
-export default Products;
+export default ProductDetail;
