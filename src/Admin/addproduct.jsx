@@ -4,6 +4,7 @@ import { getCategories, addProduct } from "../services/api";
 import Sidebar from "../Components/Sidebar";
 import Header from "../Components/Header";
 import FooterAdmin from "../Components/FooterAdmin";
+import { useNavigate } from "react-router-dom";
 
 export default function AddProduct() {
   const [categories, setCategories] = useState([]);
@@ -30,12 +31,14 @@ export default function AddProduct() {
     image: null,
   });
 
+  const navigate = useNavigate();
+
+  // Fetch kategori
   useEffect(() => {
     const fetchCategories = async () => {
       setLoadingCategories(true);
       try {
         const res = await getCategories();
-        // menyesuaikan struktur: coba cek res.data.data atau res.data
         const payload = Array.isArray(res.data?.data)
           ? res.data.data
           : res.data;
@@ -65,7 +68,7 @@ export default function AddProduct() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // simple client-side validation contoh
+    // Validasi sederhana
     if (!form.name.trim()) {
       alert("Nama produk wajib diisi");
       return;
@@ -95,13 +98,8 @@ export default function AddProduct() {
         form.stock_quantity ? Number(form.stock_quantity) : 0
       );
       formData.append("image_url", form.image_url || "");
-      // materials - backend mengharapkan JSON → kirim sebagai string JSON
-      // kalau input sederhana, kita bungkus jadi array berisi string
-    //   const materialsPayload = form.materials ? [form.materials] : [];
       formData.append("materials", form.materials || "");
       formData.append("origin", form.origin || "");
-
-      // boolean flags
       formData.append(
         "is_eco_friendly_ml",
         form.is_eco_friendly_ml ? true : false
@@ -127,23 +125,21 @@ export default function AddProduct() {
         formData.append("image", form.image);
       }
 
-      // Kirim FormData → addProduct menangani setting header multipart
+      // Kirim FormData → addProduct sudah handle headers
       const res = await addProduct(formData);
-      console.log("✅ response:", res.data);
+      console.log("✅ Produk berhasil ditambahkan:", res.data);
+
       alert("✅ Produk berhasil ditambahkan!");
-      // optional: reset form or redirect
+      navigate("/dashboard-admin"); // 👉 redirect ke dashboard
     } catch (err) {
-      // tampilkan pesan dari backend kalau ada detail validasi
       console.error("❌ Error tambah produk:", err);
       const serverData = err?.response?.data;
       if (serverData) {
-        // jika server mengirim array errors
         if (Array.isArray(serverData?.errors)) {
           const messages = serverData.errors
             .map((er) => (er?.msg ? er.msg : JSON.stringify(er)))
             .join("\n");
           alert("Gagal menambahkan produk:\n" + messages);
-          console.error("Server validation errors:", serverData.errors);
         } else if (serverData.message) {
           alert("Gagal menambahkan produk:\n" + serverData.message);
         } else {
@@ -222,7 +218,6 @@ export default function AddProduct() {
                   <option value="Electronics">Electronics</option>
                   <option value="Fashion">Fashion</option>
                   <option value="Household">Household</option>
-                  {/* TODO: kalau ada endpoint backend untuk ML categories, ambil pakai API */}
                 </select>
               </div>
 
@@ -316,9 +311,7 @@ export default function AddProduct() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium">
-                  Upload Image
-                </label>
+                <label className="block text-sm font-medium">Upload Image</label>
                 <input
                   type="file"
                   name="image"
