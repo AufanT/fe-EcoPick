@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import AOS from "aos";
 import "aos/dist/aos.css";
-import Dashboard from "./User/Dashboard";
+import Dashboard from "./User/dashboard";
 import Navbar from "./Components/Navbar";
 import CartPage from "./User/cart";
 import DashboardAdmin from "./Admin/dashboardadmin";

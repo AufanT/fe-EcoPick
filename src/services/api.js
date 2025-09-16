@@ -2,7 +2,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "https://203ba49b8370.ngrok-free.app/api",
+  baseURL: "/api",
 });
 
 // Interceptor → otomatis kirim token
