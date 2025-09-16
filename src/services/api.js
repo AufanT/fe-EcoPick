@@ -16,7 +16,7 @@ api.interceptors.request.use((config) => {
 });
 
 // =======================
-// Products
+// Products (Admin - sudah ada)
 // =======================
 export const getProducts = (page = 1, limit = 10) =>
   api.get(`/admin/products?page=${page}&limit=${limit}`);
@@ -32,15 +32,56 @@ export const addProduct = (data, config = {}) => {
 };
 
 // =======================
-// Categories
+// Categories (Admin - sudah ada)
 // =======================
 export const getCategories = () => api.get("/admin/categories");
 export const addCategory = (data) => api.post("/admin/categories", data);
 
 // =======================
-// Auth
+// Auth (Sudah ada)
 // =======================
 export const login = (data) => api.post("/auth/login", data);
 export const register = (data) => api.post("/auth/register", data);
+
+// =======================
+// (BARU) Product & Cart API untuk User
+// =======================
+/**
+ * Mengambil produk untuk etalase publik.
+ * Jika homepage=true, BE akan otomatis memberi rekomendasi jika user login.
+ */
+export const fetchPublicProducts = (isHomepage = false) => 
+  api.get(`/products?homepage=${isHomepage}`);
+
+/**
+ * Menambah item ke keranjang di database (Wajib Login)
+ */
+export const addItemToCart = (productId, quantity = 1) => 
+  api.post("/cart", { product_id: productId, quantity: quantity });
+
+// Tambahkan fungsi-fungsi ini ke dalam file api.js Anda yang sudah ada
+
+/**
+ * (BARU) Mengambil semua item keranjang user dari database
+ */
+export const getCartItems = () => api.get("/cart");
+
+/**
+ * (BARU) Update kuantitas item di keranjang database
+ */
+export const updateCartItemQty = (productId, newQuantity) => 
+  api.put(`/cart/${productId}`, { quantity: newQuantity });
+
+/**
+ * (BARU) Menghapus item dari keranjang database
+ */
+export const deleteCartItem = (productId) => 
+  api.delete(`/cart/${productId}`);
+
+/**
+ * (BARU) Memproses checkout. 
+ * BE akan otomatis membaca keranjang dari DB.
+ */
+export const processCheckout = () => api.post("/orders/checkout");
 
 export default api;

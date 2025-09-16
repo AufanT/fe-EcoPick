@@ -1,62 +1,164 @@
 import { useState, useEffect } from "react";
 import { Trash2 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
+// (BARU) Impor fungsi API kita
+import { getCartItems, updateCartItemQty, deleteCartItem } from "../services/api"; 
 
 export default function CartPage() {
   const [items, setItems] = useState([]);
+  // (BARU) State untuk menyimpan total harga dari backend
+  const [totalPrice, setTotalPrice] = useState(0); 
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
 
-  // Ambil data cart dari localStorage saat halaman cart dibuka
-  useEffect(() => {
-    const savedCart = localStorage.getItem("ecopick_cart");
-    if (savedCart) {
-      setItems(JSON.parse(savedCart));
-    }
-  }, []);
+  // (BARU) Fungsi untuk mengambil data keranjang dari API
+  const fetchCart = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      // Panggil GET /api/cart
+      const res = await getCartItems(); 
+      
+      // Backend mengembalikan { cartItems: [...], totalPrice: ... }
+      // Kita tambahkan properti 'checked: true' di sisi frontend untuk UI
+      const itemsWithChecked = res.data.cartItems.map(item => ({
+        ...item,
+        // (PENTING) Backend mengembalikan data Produk dalam properti "Product" (huruf P besar)
+        // Kita "ratakan" (flatten) datanya agar lebih mudah digunakan di UI
+        id: item.Product.id,
+        name: item.Product.name,
+        price: parseFloat(item.Product.price),
+        img: item.Product.image_url,
+        qty: item.quantity, // qty dari CartItem
+        checked: true, // Default semua tercentang
+      }));
+      
+      setItems(itemsWithChecked);
+      setTotalPrice(res.data.totalPrice);
 
-  const handleQtyChange = (id, type) => {
-    const updated = items.map((item) =>
-      item.id === id
-        ? {
-            ...item,
-            qty: type === "inc" ? item.qty + 1 : item.qty > 1 ? item.qty - 1 : 1,
-          }
-        : item
-    );
-    setItems(updated);
-    localStorage.setItem("ecopick_cart", JSON.stringify(updated)); // update localStorage juga
+      // Hapus localStorage LAMA (PENTING!)
+      localStorage.removeItem("ecopick_cart");
+
+    } catch (err) {
+      console.error("Gagal mengambil keranjang:", err);
+      // Jika error 401/403 (belum login), paksa ke login
+      if (err.response && (err.response.status === 401 || err.response.status === 403)) {
+         setError("Anda harus login untuk melihat keranjang. Mengalihkan...");
+         setTimeout(() => navigate("/login"), 2000);
+      } else {
+         setError("Gagal memuat keranjang. Silakan coba lagi.");
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
+  // (BARU) Ambil data cart dari API saat halaman dibuka
+  useEffect(() => {
+    fetchCart();
+  }, []);
+
+  // (BARU) Update Qty via API
+  const handleQtyChange = async (id, type) => {
+    const item = items.find((i) => i.id === id);
+    if (!item) return;
+
+    let newQty;
+    if (type === "inc") {
+      newQty = item.qty + 1;
+    } else {
+      newQty = item.qty > 1 ? item.qty - 1 : 1; // Minimal 1
+    }
+    
+    if (newQty === item.qty) return; // Tidak ada perubahan
+
+    try {
+      // Update state FE dulu agar responsif
+      const optimisticItems = items.map(i => i.id === id ? { ...i, qty: newQty } : i);
+      setItems(optimisticItems);
+      recalculateTotals(optimisticItems); // Hitung ulang total di FE
+
+      // Panggil API PUT /api/cart/:productId
+      await updateCartItemQty(id, newQty);
+      // Jika sukses, data sudah sinkron. Jika gagal, panggil fetchCart() lagi untuk rollback.
+    } catch (error) {
+      console.error("Gagal update qty:", error);
+      alert("Gagal update keranjang. Memuat ulang data...");
+      fetchCart(); // Rollback jika API gagal
+    }
+  };
+
+  // (BARU) Delete Item via API
+  const handleDelete = async (id) => {
+    if (!window.confirm("Yakin ingin menghapus item ini?")) return;
+
+    try {
+      // Update state FE dulu
+      const optimisticItems = items.filter((i) => i.id !== id);
+      setItems(optimisticItems);
+      recalculateTotals(optimisticItems);
+
+      // Panggil API DELETE /api/cart/:productId
+      await deleteCartItem(id);
+      
+    } catch (error) {
+       console.error("Gagal hapus item:", error);
+       alert("Gagal hapus item. Memuat ulang data...");
+       fetchCart(); // Rollback jika API gagal
+    }
+  };
+
+
+  // Logika centang (HANYA di frontend, tidak perlu API call)
   const handleCheck = (id) => {
     const updated = items.map((item) =>
       item.id === id ? { ...item, checked: !item.checked } : item
     );
     setItems(updated);
-    localStorage.setItem("ecopick_cart", JSON.stringify(updated));
+    recalculateTotals(updated); // Hitung ulang total saat centang diubah
+  };
+  
+  // (DIUBAH) Fungsi ini sekarang hanya menghitung total di sisi FE berdasarkan item yg dicentang
+  // Total harga asli (totalPrice) tetap dari backend
+  const recalculateTotals = (currentItems) => {
+     const subtotalChecked = currentItems
+      .filter((item) => item.checked)
+      .reduce((acc, item) => acc + item.price * item.qty, 0);
+     setSubtotal(subtotalChecked);
   };
 
-  const handleDelete = (id) => {
-    const updated = items.filter((item) => item.id !== id);
-    setItems(updated);
-    localStorage.setItem("ecopick_cart", JSON.stringify(updated));
-  };
+  // State baru untuk total yang dicentang
+  const [subtotal, setSubtotal] = useState(0);
 
-  const subtotal = items
-    .filter((item) => item.checked)
-    .reduce((acc, item) => acc + item.price * item.qty, 0);
-
-  const shipping = subtotal > 0 ? 30000 : 0;
+  // Update subtotal saat items (dari API) atau totalPrice (dari API) berubah
+  useEffect(() => {
+    recalculateTotals(items);
+  }, [items]);
+  
+  // --- Kalkulasi untuk Summary Box ---
+  const shipping = subtotal > 0 ? 30000 : 0; // Biarkan ongkir statis dulu
   const total = subtotal + shipping;
 
-  // >>> fungsi checkout <<<
+  // (DIUBAH) Checkout sekarang TIDAK mengirim data, karena BE sudah tahu isi cart dari DB
   const handleCheckout = () => {
     const selectedItems = items.filter((item) => item.checked);
     if (selectedItems.length === 0) {
       alert("Pilih minimal 1 item untuk checkout!");
       return;
     }
-    navigate("/checkout", { state: { items: selectedItems } });
+    // Cukup navigasi. Halaman checkout yang akan memanggil API.
+    navigate("/checkout"); 
   };
+
+  // Loading dan Error handling
+  if (loading) {
+    return <div className="p-6 min-h-screen">Loading cart...</div>;
+  }
+  
+  if (error) {
+     return <div className="p-6 min-h-screen text-red-600">{error}</div>;
+  }
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen ">
@@ -89,16 +191,17 @@ export default function CartPage() {
         {/* Cart Items */}
         <div className="lg:col-span-2 space-y-4">
           {items.length === 0 ? (
-            <p className="text-gray-500">Cart is empty 😢</p>
+            <p className="text-gray-500">Keranjang Anda kosong. 😢</p>
           ) : (
             items.map((item) => (
               <div
-                key={item.id}
+                // (PENTING) key sekarang menggunakan item.id (Product ID)
+                key={item.id} 
                 className="flex items-center bg-white p-4 rounded-xl shadow-sm"
               >
                 <input
                   type="checkbox"
-                  checked={item.checked}
+                  checked={!!item.checked} // Pastikan boolean
                   onChange={() => handleCheck(item.id)}
                   className="mr-3 w-5 h-5"
                 />
@@ -143,7 +246,7 @@ export default function CartPage() {
         <div className="bg-white p-6 rounded-xl shadow-sm h-fit">
           <h2 className="font-semibold mb-4">Order Summary</h2>
           <div className="flex justify-between text-gray-600 mb-2">
-            <span>Subtotal</span>
+            <span>Subtotal (Items checked)</span>
             <span>Rp {subtotal.toLocaleString("id-ID")}</span>
           </div>
           <div className="flex justify-between text-gray-600 mb-2">
@@ -156,7 +259,8 @@ export default function CartPage() {
           </div>
           <button
             onClick={handleCheckout}
-            className="w-full bg-green-600 text-white py-2 rounded-xl hover:bg-green-700 transition"
+            disabled={subtotal === 0} // (BARU) Disable jika tidak ada yg dicentang
+            className="w-full bg-green-600 text-white py-2 rounded-xl hover:bg-green-700 transition disabled:bg-gray-400"
           >
             Checkout
           </button>
